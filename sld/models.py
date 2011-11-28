@@ -38,7 +38,7 @@ class StyledLayerDescriptor:
         """
         Get the XML Namespace.
         """
-        return self._style.getroot().get('xmlns')
+        return self._style.getroot().nsmap[None]
 
     @property
     def NamedLayer(self):
@@ -169,6 +169,7 @@ class Rule(SLDNode):
             xpath[0].text = title
         else:
             elem = self._node.makeelement('{%s}Title' % self._nsmap['sld'], nsmap=self._nsmap)
+            elem.text = title
             self._node.append(elem)
 
     def del_title(self):
