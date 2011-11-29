@@ -42,7 +42,7 @@ class SLDNode(object):
                     xpath[0] = value._node
             else:
                 if cls is None:
-                    elem = self._node.makeelement('{%s}%s' % (ns, name), nsmap=self._nsmap)
+                    elem = self._node.makeelement('{%s}%s' % (self._nsmap[ns], name), nsmap=self._nsmap)
                     elem.text = value
                     self._node.append(elem)
                 else:

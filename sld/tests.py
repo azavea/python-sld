@@ -72,7 +72,7 @@ class SLD_Test(TestCase):
 
         self.assertFalse( sld.NamedLayer.UserStyle is None)
 
-    def test_userstyle_title(self):
+    def test_userstyle_title1(self):
         sld = copy.deepcopy(self._sld0)
         us = sld.NamedLayer.UserStyle 
         expected = 'Population'
@@ -85,14 +85,31 @@ class SLD_Test(TestCase):
         us._node.remove(us._node[2])
 
         expected = """<UserStyle xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <Title>Consternation</Title>
+      <Title>%s</Title>
       <Abstract>A grayscale style showing the population numbers in a given geounit.</Abstract>
-      </UserStyle>"""
+      </UserStyle>""" % expected
         actual = etree.tostring(us._node, with_tail=False)
         self.assertEqual( len(actual), len(expected))
         self.assertEqual( actual, expected, "UserStyle was not serialized correctly.\n%s" % actual )
 
-    def test_userstyle_abstract(self):
+    def test_userstyle_title2(self):
+        sld = copy.deepcopy(self._sld1)
+        sld.create_namedlayer()
+        sld.NamedLayer.create_userstyle()
+
+        us = sld.NamedLayer.UserStyle 
+        self.assertTrue( us.Title is None, "UserStyle Title was not None")
+
+        expected = 'Consternation'
+        us.Title = expected
+        self.assertEqual( us.Title, expected, "UserStyle Title was '%s', not '%s'" % (us.Title, expected,))
+
+        expected = """<sld:UserStyle xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>%s</sld:Title></sld:UserStyle>""" % expected
+        actual = etree.tostring(us._node, with_tail=False)
+        self.assertEqual( len(actual), len(expected))
+        self.assertEqual( actual, expected, "UserStyle was not serialized correctly.\n%s" % actual )
+
+    def test_userstyle_abstract1(self):
         sld = copy.deepcopy(self._sld0)
         us = sld.NamedLayer.UserStyle
         expected = 'A grayscale style showing the population numbers in a given geounit.'
@@ -106,8 +123,25 @@ class SLD_Test(TestCase):
 
         expected = """<UserStyle xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <Title>Population</Title>
-      <Abstract>Something completely different</Abstract>
-      </UserStyle>"""
+      <Abstract>%s</Abstract>
+      </UserStyle>""" % expected
+        actual = etree.tostring(us._node, with_tail=False)
+        self.assertEqual( len(actual), len(expected) )
+        self.assertEqual( actual, expected, "UserStyle was not serialized correctly.\n%s" % actual )
+
+    def test_userstyle_abstract2(self):
+        sld = copy.deepcopy(self._sld1)
+        sld.create_namedlayer()
+        sld.NamedLayer.create_userstyle()
+
+        us = sld.NamedLayer.UserStyle
+        self.assertTrue( us.Abstract is None, "UserStyle Abstract was not None")
+
+        expected = 'Something completely different'
+        us.Abstract = expected
+        self.assertEqual( us.Abstract, expected, "UserStyle Abstract was '%s', not '%s'" % (us.Abstract, expected,))
+
+        expected = """<sld:UserStyle xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Abstract>%s</sld:Abstract></sld:UserStyle>""" % expected
         actual = etree.tostring(us._node, with_tail=False)
         self.assertEqual( len(actual), len(expected) )
         self.assertEqual( actual, expected, "UserStyle was not serialized correctly.\n%s" % actual )
