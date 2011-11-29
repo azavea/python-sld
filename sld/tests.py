@@ -68,6 +68,10 @@ class SLD_Test(TestCase):
 
         self.assertTrue( sld.NamedLayer.UserStyle is None)
 
+        sld.NamedLayer.create_userstyle()
+
+        self.assertFalse( sld.NamedLayer.UserStyle is None)
+
     def test_userstyle_title(self):
         sld = copy.deepcopy(self._sld0)
         us = sld.NamedLayer.UserStyle 

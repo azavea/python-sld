@@ -8,7 +8,91 @@ class SLDNode(object):
         self._parent = parent
         self._nsmap = nsmap
         self._node = None
-        
+   
+    @staticmethod
+    def makeproperty(ns, node, cls=None, name=None):
+        def get_property(self):
+            if cls is None:
+                xpath = '%s:%s' % (ns, name)
+            else:
+                xpath = '%s:%s' % (ns, cls.__name__)
+
+            xpath = self._node.xpath(xpath, namespaces=self._nsmap)
+            if len(xpath) == 1:
+                if cls is None:
+                    return xpath[0].text
+                else:
+                    elem = cls.__new__(cls)
+                    cls.__init__(elem, self._node, self._nsmap)
+                    return elem
+            else:
+                return None
+
+        def set_property(self, value):
+            if cls is None:
+                xpath = '%s:%s' % (ns, name)
+            else:
+                xpath = '%s:%s' % (ns, cls.__name__)
+
+            xpath = self._node.xpath(xpath, namespaces=self._nsmap)
+            if len(xpath) == 1:
+                if cls is None:
+                    xpath[0].text = value
+                else:
+                    xpath[0] = value._node
+            else:
+                if cls is None:
+                    elem = self._node.makeelement('{%s}%s' % (ns, name), nsmap=self._nsmap)
+                    elem.text = value
+                    self._node.append(elem)
+                else:
+                    self._node.append(value._node)
+
+        def del_property(self):
+            if cls is None:
+                xpath = '%s:%s' % (ns, name)
+            else:
+                xpath = '%s:%s' % (ns, cls.__name__)
+
+            xpath = self._node.xpath(xpath, namespaces=self._nsmap)
+            if len(xpath) == 1:
+                self._node.remove(xpath[0])
+
+
+        return property(get_property, set_property, del_property, "")
+
+
+class UserStyle(SLDNode):
+    def __init__(self, parent, nsmap):
+        super(UserStyle, self).__init__(parent, nsmap)
+        self._node = self._parent.xpath('sld:UserStyle', namespaces=self._nsmap)[0]
+
+        setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', self._node, name='Title'))
+        setattr(self.__class__, 'Abstract', SLDNode.makeproperty('sld', self._node, name='Abstract'))
+
+    @property
+    def FeatureTypeStyle(self):
+        return FeatureTypeStyle(self._node, self._nsmap)
+
+
+class NamedLayer(SLDNode):
+    def __init__(self, parent, nsmap):
+        super(NamedLayer, self).__init__(parent, nsmap)
+        self._node = self._parent.xpath('sld:NamedLayer', namespaces=self._nsmap)[0]
+
+        setattr(self.__class__, 'UserStyle', SLDNode.makeproperty('sld', self._node, cls=UserStyle))
+
+    @property
+    def Name(self):
+        return self._node.xpath('sld:Name', namespaces=self._nsmap)[0].text
+
+    def create_userstyle(self):
+        if len(self._node.xpath('sld:UserStyle', namespaces=self._nsmap)) == 1:
+            return self.UserStyle
+
+        elem = self._node.makeelement('{%s}UserStyle' % self._nsmap['sld'], nsmap=self._nsmap)
+        self._node.append(elem)
+
 
 class StyledLayerDescriptor(SLDNode):
     def __init__(self, sld_file=None):
@@ -44,6 +128,7 @@ class StyledLayerDescriptor(SLDNode):
             }
             self._node = Element("{%s}StyledLayerDescriptor" % self._nsmap['sld'], nsmap=self._nsmap)
 
+        setattr(self.__class__, 'NamedLayer', SLDNode.makeproperty('sld', self._node, cls=NamedLayer))
 
     @property
     def version(self):
@@ -59,117 +144,15 @@ class StyledLayerDescriptor(SLDNode):
         """
         return self._node.getroot().nsmap[None]
 
-    def get_namedlayer(self):
-        if len(self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)) == 1:
-            return NamedLayer(self._node, self._nsmap)
-        else:
-            return None
-
-    def set_namedlayer(self, value):
-        xpath = self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)
-        if len(xpath) == 1:
-            xpath[0] = value._node
-        else:
-            self._node.append(value._node)
-
-    def del_namedlayer(self):
-        xpath = self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)
-        if len(xpath) == 1:
-            self._node.remove(xpath[0])
-
     def create_namedlayer(self):
         if len(self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)) == 1:
-            return self.get_namedlayer()
+            return self.NamedLayer
 
         elem = self._node.makeelement('{%s}NamedLayer' % self._nsmap['sld'], nsmap=self._nsmap)
         self._node.append(elem)
 
-        return self.get_namedlayer()
+        return self.NamedLayer
 
-    NamedLayer = property(get_namedlayer, set_namedlayer, del_namedlayer, "")
-
-
-class NamedLayer(SLDNode):
-    def __init__(self, parent, nsmap):
-        super(NamedLayer, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('sld:NamedLayer', namespaces=self._nsmap)[0]
-
-    @property
-    def Name(self):
-        return self._node.xpath('sld:Name', namespaces=self._nsmap)[0].text
-
-    def get_userstyle(self):
-        if len(self._node.xpath('sld:UserStyle', namespaces=self._nsmap)) == 1:
-            return UserStyle(self._node, self._nsmap)
-        else:
-            return None
-
-    def set_userstyle(self, value):
-        xpath = self._node.xpath('sld:UserStyle', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            xpath[0] = value
-        else:
-            elem = self._node.makeelement('{%s}UserStyle' % self._nsmap['sld'], nsmap=self._nsmap)
-            self._node.append(elem)
-
-    def del_userstyle(self):
-        xpath = self._node.xpath('sld:UserStyle', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            self._node.remove(xpath[0])
-
-    UserStyle = property(get_userstyle, set_userstyle, del_userstyle, "")
-
-class UserStyle(SLDNode):
-    def __init__(self, parent, nsmap):
-        super(UserStyle, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('sld:UserStyle', namespaces=self._nsmap)[0]
-
-    def get_title(self):
-        xpath = self._node.xpath('sld:Title', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            return xpath[0].text
-        return None
-
-    def set_title(self, title):
-        xpath = self._node.xpath('sld:Title', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            xpath[0].text = title
-        else:
-            elem = self._node.makeelement('{%s}Title' % self._nsmap['sld'], nsmap=self._nsmap)
-            self._node.append(elem)
-
-    def del_title(self):
-        xpath = self._node.xpath('sld:Title', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            self._node.remove(xpath[0])
-
-    Title = property(get_title, set_title, del_title, "The Title of the UserStyle")
-
-    def get_abstract(self):
-        xpath = self._node.xpath('sld:Abstract', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            return xpath[0].text
-        else:
-            return None
-
-    def set_abstract(self, abstract):
-        xpath = self._node.xpath('sld:Abstract', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            xpath[0].text = abstract
-        else:
-            elem = self._node.makeelement('{%s}Abstract' % self._nsmap['sld'], nsmap=self._nsmap)
-            self._node.append(elem)
-
-    def del_abstract(self):
-        xpath = self._node.xpath('sld:Abstract', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            self._node.remove(xpath[0])
-
-    Abstract = property(get_abstract, set_abstract, del_abstract, "The Abstract of the UserStyle")
-
-    @property
-    def FeatureTypeStyle(self):
-        return FeatureTypeStyle(self._node, self._nsmap)
 
 
 class FeatureTypeStyle(SLDNode):
