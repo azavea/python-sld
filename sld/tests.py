@@ -146,15 +146,40 @@ class SLD_Test(TestCase):
         self.assertEqual( len(actual), len(expected) )
         self.assertEqual( actual, expected, "UserStyle was not serialized correctly.\n%s" % actual )
 
-    def test_userstyle_featuretypestyle(self):
+    def test_userstyle_featuretypestyle1(self):
         self.assertTrue( isinstance(self._sld0.NamedLayer.UserStyle.FeatureTypeStyle, FeatureTypeStyle), "FeatureTypeStyle property is not the proper class.")
 
-    def test_featuretypestyle_rules(self):
+    def test_userstyle_featuretypestyle2(self):
+        sld = copy.deepcopy(self._sld1)
+        sld.create_namedlayer()
+        sld.NamedLayer.create_userstyle()
+
+        self.assertTrue( sld.NamedLayer.UserStyle.FeatureTypeStyle is None )
+
+        sld.NamedLayer.UserStyle.create_featuretypestyle()
+
+        self.assertFalse( sld.NamedLayer.UserStyle.FeatureTypeStyle is None )
+
+    def test_featuretypestyle_rules1(self):
         rules = self._sld0.NamedLayer.UserStyle.FeatureTypeStyle.Rules
         self.assertEqual( len(rules), 6 )
         self.assertTrue( isinstance(rules[0], Rule), "Rule item in list is not the proper class." )
 
-    def test_rule_title(self):
+    def test_featuretypestyle_rules2(self):
+        sld = copy.deepcopy(self._sld1)
+        sld.create_namedlayer()
+        sld.NamedLayer.create_userstyle()
+        sld.NamedLayer.UserStyle.create_featuretypestyle()
+
+        rules = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules
+        self.assertEqual( len(rules), 0 )
+
+        sld.NamedLayer.UserStyle.FeatureTypeStyle.create_rule()
+        rules = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules
+
+        self.assertEqual( len(rules), 1 )
+
+    def test_rule_title1(self):
         sld = copy.deepcopy(self._sld0)
         rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
 
@@ -183,3 +208,134 @@ class SLD_Test(TestCase):
         <Title>&gt; 999</Title></Rule>"""
         actual = etree.tostring(rule._node, with_tail=False)
         self.assertEqual( actual, expected, actual )
+
+    def test_rule_title2(self):
+        sld = copy.deepcopy(self._sld1)
+        sld.create_namedlayer()
+        sld.NamedLayer.create_userstyle()
+        sld.NamedLayer.UserStyle.create_featuretypestyle()
+        sld.NamedLayer.UserStyle.FeatureTypeStyle.create_rule()
+
+        rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
+
+        self.assertTrue( rule.Title is None )
+
+        expected = "> 999"
+        rule.Title = expected
+        self.assertEqual( rule.Title, expected )
+
+        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>&gt; 999</sld:Title></sld:Rule>"""
+        actual = etree.tostring(rule._node, with_tail=False)
+        self.assertEqual( actual, expected, actual )
+
+    def test_rule_filter1(self):
+        sld = copy.deepcopy(self._sld0)
+        rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
+
+        self.assertFalse( rule.Filter.PropertyIsGreaterThanOrEqualTo is None )
+
+        self.assertEqual( rule.Filter.PropertyIsGreaterThanOrEqualTo.PropertyName, 'number' )
+        self.assertEqual( rule.Filter.PropertyIsGreaterThanOrEqualTo.Literal, '880' )
+
+    def test_rule_filter_none(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        rfilter = rule.create_filter()
+
+        self.assertTrue( rfilter is None )
+
+    def test_filter_eq(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        rfilter = rule.create_filter('valueA', '==', '5000')
+
+        self.assertTrue( rfilter.PropertyIsNotEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThan is None )
+        self.assertTrue( rfilter.PropertyIsLessThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThan is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLike is None )
+        self.assertFalse( rfilter.PropertyIsEqualTo is None )
+        self.assertEqual( rfilter.PropertyIsEqualTo.PropertyName, 'valueA' )
+        self.assertEqual( rfilter.PropertyIsEqualTo.Literal, '5000' )
+
+    def test_filter_lte(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        rfilter = rule.create_filter('valueB', '<=', '5000')
+
+        self.assertTrue( rfilter.PropertyIsEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsNotEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThan is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThan is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLike is None )
+        self.assertFalse( rfilter.PropertyIsLessThanOrEqualTo is None )
+        self.assertEqual( rfilter.PropertyIsLessThanOrEqualTo.PropertyName, 'valueB' )
+        self.assertEqual( rfilter.PropertyIsLessThanOrEqualTo.Literal, '5000' )
+
+    def test_filter_lt(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        rfilter = rule.create_filter('valueC', '<', '500')
+
+        self.assertTrue( rfilter.PropertyIsEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsNotEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThan is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLike is None )
+        self.assertFalse( rfilter.PropertyIsLessThan is None )
+        self.assertEqual( rfilter.PropertyIsLessThan.PropertyName, 'valueC' )
+        self.assertEqual( rfilter.PropertyIsLessThan.Literal, '500' )
+
+    def test_filter_gte(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        rfilter = rule.create_filter('valueD', '>=', '100')
+
+        self.assertTrue( rfilter.PropertyIsEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThan is None )
+        self.assertTrue( rfilter.PropertyIsNotEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThan is None )
+        self.assertTrue( rfilter.PropertyIsLike is None )
+        self.assertFalse( rfilter.PropertyIsGreaterThanOrEqualTo is None )
+        self.assertEqual( rfilter.PropertyIsGreaterThanOrEqualTo.PropertyName, 'valueD' )
+        self.assertEqual( rfilter.PropertyIsGreaterThanOrEqualTo.Literal, '100' )
+
+    def test_filter_gt(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        rfilter = rule.create_filter('valueE', '>', '10')
+
+        self.assertTrue( rfilter.PropertyIsEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThan is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsNotEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLike is None )
+        self.assertFalse( rfilter.PropertyIsGreaterThan is None )
+        self.assertEqual( rfilter.PropertyIsGreaterThan.PropertyName, 'valueE' )
+        self.assertEqual( rfilter.PropertyIsGreaterThan.Literal, '10' )
+
+
+

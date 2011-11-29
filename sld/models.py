@@ -62,6 +62,156 @@ class SLDNode(object):
         return property(get_property, set_property, del_property, "")
 
 
+    def get_or_create_element(self, ns, name):
+        if len(self._node.xpath('%s:%s' % (ns, name), namespaces=self._nsmap)) >= 1:
+            return getattr(self, name)
+
+        return self.create_element(ns, name)
+
+    def create_element(self, ns, name):
+        elem = self._node.makeelement('{%s}%s' % (self._nsmap[ns], name), nsmap=self._nsmap)
+        self._node.append(elem)
+
+        return getattr(self, name)
+
+
+class PropertyCriterion(SLDNode):
+    def __init__(self, parent, nsmap, name):
+        super(PropertyCriterion, self).__init__(parent, nsmap)
+        xpath = self._parent.xpath('ogc:'+name, namespaces=self._nsmap)
+        if len(xpath) < 1:
+            self._node = self._parent.makeelement('{%s}%s' % (self._nsmap['ogc'], name), nsmap=self._nsmap)
+            self._parent.append(self._node)
+        else:
+            self._node = xpath[0]
+
+        setattr(self.__class__, 'PropertyName', SLDNode.makeproperty('ogc', self._node, name='PropertyName'))
+        setattr(self.__class__, 'Literal', SLDNode.makeproperty('ogc', self._node, name='Literal'))
+
+
+class Filter(SLDNode):
+    def __init__(self, parent=None, nsmap=None, propname=None, comparitor=None, value=None):
+        super(Filter, self).__init__(parent, nsmap)
+        self._node = self._parent.xpath('ogc:Filter', namespaces=self._nsmap)[0]
+
+    def __add__(x, y):
+        elem = x._node.makeelement('{%s}And' % x._nsmap['ogc'])
+        elem.append(copy.copy(x._node[0]))
+        elem.append(copy.copy(y._node[0]))
+        return elem
+
+    def __or__(x, y):
+        elem = x._node.makeelement('{%s}Or' % x._nsmap['ogc'])
+        elem.append(copy.copy(x._node[0]))
+        elem.append(copy.copy(y._node[0]))
+        return elem
+
+    def __getattr__(self, name):
+        if not name.startswith('PropertyIs'):
+            raise AttributeError('Property name must be one of: PropertyIsEqualTo, PropertyIsNotEqualTo, PropertyIsLessThan, PropertyIsLessThanOrEqualTo, PropertyIsGreaterThan, PropertyIsGreaterThanOrEqualTo, PropertyIsLike.')
+        xpath = self._node.xpath('ogc:'+name, namespaces=self._nsmap)
+        if len(xpath) == 0:
+            return None
+
+        return PropertyCriterion(self._node, self._nsmap, name)
+
+    def __setattr__(self, name, value):
+        if not name.startswith('PropertyIs'):
+            object.__setattr__(self, name, value)
+            return
+
+        xpath = self._node.xpath('ogc:'+name, namespaces=self._nsmap)
+        if len(xpath) > 0:
+            xpath[0] = value
+        else:
+            elem = self._node.makeelement('{%s}'+name % self._nsmap['ogc'], nsmap=self._nsmap)
+            self._node.append(elem)
+
+    def __delattr__(self, name):
+        xpath = self._node.xpath('ogc:'+name, namespaces=self._nsmap)
+        if len(xpath) > 0:
+            self._node.remove(xpath[0])
+
+
+class Rule(SLDNode):
+    def __init__(self, parent, nsmap, index):
+        super(Rule, self).__init__(parent, nsmap)
+        self._node = self._parent.xpath('sld:Rule', namespaces=self._nsmap)[index]
+
+        setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', self._node, name='Title'))
+        setattr(self.__class__, 'Filter', SLDNode.makeproperty('ogc', self._node, cls=Filter))
+        #setattr(self.__class__, 'PolygonSymbolizer', SLDNode.makeproperty('sld', self._node, cls=PolygonSymbolizer))
+        #setattr(self.__class__, 'LineSymbolizer', SLDNode.makeproperty('sld', self._node, cls=LineSymbolizer))
+
+    def create_filter(self, propname=None, comparitor=None, value=None):
+        if propname is None or comparitor is None or value is None:
+            return None
+
+        rfilter = self.create_element('ogc', 'Filter')
+        ftype = None
+        if comparitor == '==':
+            ftype = 'PropertyIsEqualTo'
+        elif comparitor == '<=':
+            ftype = 'PropertyIsLessThanOrEqualTo'
+        elif comparitor == '<':
+            ftype = 'PropertyIsLessThan'
+        elif comparitor == '>=':
+            ftype = 'PropertyIsGreaterThanOrEqualTo'
+        elif comparitor == '>':
+            ftype = 'PropertyIsGreaterThan'
+        elif comparitor == '!=':
+            ftype = 'PropertyIsNotEqualTo'
+        elif comparitor == '%':
+            ftype = 'PropertyIsLike'
+
+        if not ftype is None:
+            prop = PropertyCriterion(rfilter._node, self._nsmap, ftype)
+            prop.PropertyName = propname
+            if not value is None:
+                prop.Literal = value
+            setattr(rfilter, ftype, prop)
+
+        return rfilter
+        
+
+class Rules(SLDNode):
+    def __init__(self, parent, nsmap):
+        super(Rules, self).__init__(parent, nsmap)
+        self._node = None
+        self._nodes = self._parent.xpath('sld:Rule', namespaces=self._nsmap)
+
+    def __len__(self):
+        return len(self._nodes)
+
+    def __getitem__(self, key):
+        return Rule(self._parent, self._nsmap, key)
+
+    def __setitem__(self, key, value):
+        if isinstance(value, Rule):
+            self._nodes.replace(self._nodes[key], value._node)
+        elif isinstance(value, Element):
+            self._nodes.replace(self._nodes[key], value)
+   
+    def __delitem__(self, key):
+        self._nodes.remove(self._nodes[key])
+
+
+class FeatureTypeStyle(SLDNode):
+    def __init__(self, parent, nsmap):
+        super(FeatureTypeStyle, self).__init__(parent, nsmap)
+        self._node = self._parent.xpath('sld:FeatureTypeStyle', namespaces=self._nsmap)[0]
+
+    @property
+    def Rules(self):
+        return Rules(self._node, self._nsmap)
+
+    def create_rule(self):
+        elem = self._node.makeelement('{%s}Rule' % self._nsmap['sld'], nsmap=self._nsmap)
+        self._node.append(elem)
+
+        return Rule(self._node, self._nsmap, len(self._node)-1)
+
+
 class UserStyle(SLDNode):
     def __init__(self, parent, nsmap):
         super(UserStyle, self).__init__(parent, nsmap)
@@ -69,10 +219,10 @@ class UserStyle(SLDNode):
 
         setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', self._node, name='Title'))
         setattr(self.__class__, 'Abstract', SLDNode.makeproperty('sld', self._node, name='Abstract'))
+        setattr(self.__class__, 'FeatureTypeStyle', SLDNode.makeproperty('sld', self._node, cls=FeatureTypeStyle))
 
-    @property
-    def FeatureTypeStyle(self):
-        return FeatureTypeStyle(self._node, self._nsmap)
+    def create_featuretypestyle(self):
+        return self.get_or_create_element('sld', 'FeatureTypeStyle')
 
 
 class NamedLayer(SLDNode):
@@ -87,11 +237,7 @@ class NamedLayer(SLDNode):
         return self._node.xpath('sld:Name', namespaces=self._nsmap)[0].text
 
     def create_userstyle(self):
-        if len(self._node.xpath('sld:UserStyle', namespaces=self._nsmap)) == 1:
-            return self.UserStyle
-
-        elem = self._node.makeelement('{%s}UserStyle' % self._nsmap['sld'], nsmap=self._nsmap)
-        self._node.append(elem)
+        return self.get_or_create_element('sld', 'UserStyle')
 
 
 class StyledLayerDescriptor(SLDNode):
@@ -145,156 +291,4 @@ class StyledLayerDescriptor(SLDNode):
         return self._node.getroot().nsmap[None]
 
     def create_namedlayer(self):
-        if len(self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)) == 1:
-            return self.NamedLayer
-
-        elem = self._node.makeelement('{%s}NamedLayer' % self._nsmap['sld'], nsmap=self._nsmap)
-        self._node.append(elem)
-
-        return self.NamedLayer
-
-
-
-class FeatureTypeStyle(SLDNode):
-    def __init__(self, parent, nsmap):
-        super(FeatureTypeStyle, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('sld:FeatureTypeStyle', namespaces=self._nsmap)[0]
-
-    @property
-    def Rules(self):
-        return Rules(self._node, self._nsmap)
-
-
-class Rules(SLDNode):
-    def __init__(self, parent, nsmap):
-        super(Rules, self).__init__(parent, nsmap)
-        self._nodes = self._parent.xpath('sld:Rule', namespaces=self._nsmap)
-
-    def __len__(self):
-        return len(self._nodes)
-
-    def __getitem__(self, key):
-        return Rule(self._parent, self._nsmap, key)
-
-    def __setitem__(self, key, value):
-        if isinstance(value, Rule):
-            self._nodes.replace(self._nodes[key], value.toelem())
-        else:
-            self._nodes.replace(self._nodes[key], value)
-   
-    def __delitem__(self, key):
-        self._nodes.remove(self._nodes[key])
-
-
-class Rule(SLDNode):
-    def __init__(self, parent, nsmap, index):
-        super(Rule, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('sld:Rule', namespaces=self._nsmap)[index]
-
-    def toelem(self):
-        return self._node
-
-    def get_title(self):
-        xpath = self._node.xpath('sld:Title', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            return xpath[0].text
-        return None
-
-    def set_title(self, title):
-        xpath = self._node.xpath('sld:Title', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            xpath[0].text = title
-        else:
-            elem = self._node.makeelement('{%s}Title' % self._nsmap['sld'], nsmap=self._nsmap)
-            elem.text = title
-            self._node.append(elem)
-
-    def del_title(self):
-        xpath = self._node.xpath('sld:Title', namespaces=self._nsmap)
-        if len(xpath) > 0:
-            self._node.remove(xpath[0])
-
-    Title = property(get_title, set_title, del_title, "The Title of the Rule")
-
-    @property
-    def Filter(self):
-        return Filter(self._node, self._nsmap)
-
-    @property
-    def PolygonSymbolizer(self):
-        return PolygonSymbolizer(self._node, self._nsmap)
-
-    @property
-    def LineSymbolizer(self):
-        return LineSymbolizer(self._node, self._nsmap)
-      
-
-class Filter(SLDNode):
-    def __init__(self, parent, nsmap):
-        super(Filter, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('ogc:Filter', namespaces=self._nsmap)[0]
-
-    def __add__(x, y):
-        elem = x._node.makeelement('{%s}And' % x._nsmap['ogc'])
-        elem.append(copy.copy(x._node[0]))
-        elem.append(copy.copy(y._node[0]))
-        return elem
-
-    def __or__(x, y):
-        elem = x._node.makeelement('{%s}Or' % x._nsmap['ogc'])
-        elem.append(copy.copy(x._node[0]))
-        elem.append(copy.copy(y._node[0]))
-        return elem
-
-    def __getattr__(self, name):
-        if not name.startswith('PropertyIs'):
-            print name
-            raise AttributeError('Property name must be one of: PropertyIsEqualTo, PropertyIsNotEqualTo, PropertyIsLessThan, PropertyIsLessThanOrEqualTo, PropertyIsGreaterThan, PropertyIsGreaterThanOrEqualTo, PropertyIsBetween, PropertyIsLike, PropertyIsNull.')
-        xpath = self._node.xpath('ogc:'+name, namespaces=self._nsmap)
-        if len(xpath) == 0:
-            return None
-
-        return PropertyCriterion(self._node, self._nsmap, name)
-
-    def __setattr__(self, name, value):
-        if not name.startswith('PropertyIs'):
-            object.__setattr__(self, name, value)
-            return
-
-        xpath = self._node.xpath('ogc:'+name, namespaces=self._nsmap)
-        if len(xpath) > 0:
-            xpath[0] = value
-        else:
-            elem = self._node.makeelement('{%s}'+name % self._nsmap['ogc'], nsmap=self._nsmap)
-            self._node.append(elem)
-
-    def __delattr__(self, name):
-        xpath = self._node.xpath('ogc:'+name, namespaces=self._nsmap)
-        if len(xpath) > 0:
-            self._node.remove(xpath[0])
-
-
-class PolygonSymbolizer(SLDNode):
-    def __init__(self, parent, nsmap):
-        super(PolygonSymbolizer, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('sld:PolygonSymbolizer', namespaces=self._nsmap)[0]
-
- 
-class LineSymbolizer(SLDNode):
-    def __init__(self, parent, nsmap):
-        super(LineSymbolizer, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('sld:LineSymbolizer', namespaces=self._nsmap)[0]
-
-
-class PropertyCriterion(SLDNode):
-    def __init__(self, parent, nsmap, name):
-        super(PropertyCriterion, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('ogc:'+name, namespaces=self._nsmap)[0]
-
-    @property
-    def PropertyName(self):
-        return self._node.xpath('ogc:PropertyName', namespaces=self._nsmap)[0]
-
-    @property
-    def Literal(self):
-        return self._node.xpath('ogc:Literal', namespaces=self._nsmap)[0]
+        return self.get_or_create_element('sld', 'NamedLayer')
