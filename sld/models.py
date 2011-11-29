@@ -1,55 +1,93 @@
-from lxml.etree import parse, XMLSchema, XMLSyntaxError
+from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError
 import urllib2
-from tempfile import NamedTemporaryFile
-import os, copy
+from tempfile import TemporaryFile
+import os, copy, logging
 
-class StyledLayerDescriptor:
-    def __init__(self, sld_file):
+class SLDNode(object):
+    def __init__(self, parent, nsmap):
+        self._parent = parent
+        self._nsmap = nsmap
+        self._node = None
+        
+
+class StyledLayerDescriptor(SLDNode):
+    def __init__(self, sld_file=None):
+        super(StyledLayerDescriptor, self).__init__(None,None)
+
+        localschema = TemporaryFile()
         schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
         resp = urllib2.urlopen(schema_url)
-        localschema = NamedTemporaryFile(delete=False)
         localschema.write(resp.read())
-        resp.close
-        localschema.close()
+        resp.close()
+        localschema.seek(0)
 
-        theschema = parse(localschema.name)
+        theschema = parse(localschema)
+        localschema.close()
 
         self._schema = XMLSchema(theschema)
 
-        self._style = parse(sld_file)
+        if not sld_file is None:
+            self._node = parse(sld_file)
+            self._nsmap = self._node.getroot().nsmap
 
-        self._schema.validate(self._style)
+            ns = self._nsmap.pop(None)
+            self._nsmap['sld'] = ns
 
-        self._nsmap = self._style.getroot().nsmap
-        ns = self._nsmap.pop(None)
-        self._nsmap['sld'] = ns
+            if not self._schema.validate(self._node):
+                logging.warn('SLD File "%s" does not validate against the SLD schema.', sld_file)
+        else:
+            self._nsmap = {
+                'sld':"http://www.opengis.net/sld",
+                'ogc':"http://www.opengis.net/ogc",
+                'xlink':"http://www.w3.org/1999/xlink",
+                'xsi':"http://www.w3.org/2001/XMLSchema-instance"
+            }
+            self._node = Element("{%s}StyledLayerDescriptor" % self._nsmap['sld'], nsmap=self._nsmap)
 
-        os.remove(localschema.name)
 
     @property
     def version(self):
         """
         Get the SLD version.
         """
-        return self._style.getroot().get('version')
+        return self._node.getroot().get('version')
 
     @property
     def xmlns(self):
         """
         Get the XML Namespace.
         """
-        return self._style.getroot().nsmap[None]
+        return self._node.getroot().nsmap[None]
 
-    @property
-    def NamedLayer(self):
-        return NamedLayer(self._style, self._nsmap)
+    def get_namedlayer(self):
+        if len(self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)) == 1:
+            return NamedLayer(self._node, self._nsmap)
+        else:
+            return None
 
+    def set_namedlayer(self, value):
+        xpath = self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)
+        if len(xpath) == 1:
+            xpath[0] = value._node
+        else:
+            self._node.append(value._node)
 
-class SLDNode(object):
-    def __init__(self, parent, nsmap):
-        self._parent = parent
-        self._nsmap = nsmap
-        
+    def del_namedlayer(self):
+        xpath = self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)
+        if len(xpath) == 1:
+            self._node.remove(xpath[0])
+
+    def create_namedlayer(self):
+        if len(self._node.xpath('sld:NamedLayer', namespaces=self._nsmap)) == 1:
+            return self.get_namedlayer()
+
+        elem = self._node.makeelement('{%s}NamedLayer' % self._nsmap['sld'], nsmap=self._nsmap)
+        self._node.append(elem)
+
+        return self.get_namedlayer()
+
+    NamedLayer = property(get_namedlayer, set_namedlayer, del_namedlayer, "")
+
 
 class NamedLayer(SLDNode):
     def __init__(self, parent, nsmap):
@@ -60,10 +98,26 @@ class NamedLayer(SLDNode):
     def Name(self):
         return self._node.xpath('sld:Name', namespaces=self._nsmap)[0].text
 
-    @property
-    def UserStyle(self):
-        return UserStyle(self._node, self._nsmap)
+    def get_userstyle(self):
+        if len(self._node.xpath('sld:UserStyle', namespaces=self._nsmap)) == 1:
+            return UserStyle(self._node, self._nsmap)
+        else:
+            return None
 
+    def set_userstyle(self, value):
+        xpath = self._node.xpath('sld:UserStyle', namespaces=self._nsmap)
+        if len(xpath) > 0:
+            xpath[0] = value
+        else:
+            elem = self._node.makeelement('{%s}UserStyle' % self._nsmap['sld'], nsmap=self._nsmap)
+            self._node.append(elem)
+
+    def del_userstyle(self):
+        xpath = self._node.xpath('sld:UserStyle', namespaces=self._nsmap)
+        if len(xpath) > 0:
+            self._node.remove(xpath[0])
+
+    UserStyle = property(get_userstyle, set_userstyle, del_userstyle, "")
 
 class UserStyle(SLDNode):
     def __init__(self, parent, nsmap):

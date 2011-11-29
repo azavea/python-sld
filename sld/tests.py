@@ -11,16 +11,25 @@ import copy
 from lxml import etree
 
 class SLD_Test(TestCase):
-    _sld = None
+    _sld0 = None
+    _sld1 = None
     def setUp(self):
         # Couldn't get this to work in setUpClass, but it would be better in there
-        if SLD_Test._sld is None:
-            SLD_Test._sld = StyledLayerDescriptor('sld/test/style.sld')
+        if SLD_Test._sld0 is None:
+            SLD_Test._sld0 = StyledLayerDescriptor('sld/test/style.sld')
+            SLD_Test._sld1 = StyledLayerDescriptor()
 
     def test_constructor1(self):
-        """
-        Test the StyledLayerDescriptor constructor.
-        """
+        sld = StyledLayerDescriptor()
+
+        self.assertTrue( 'sld' in sld._nsmap )
+
+        expected = """<sld:StyledLayerDescriptor xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"/>"""
+        actual = etree.tostring(sld._node, with_tail=False)
+        self.assertEqual(actual, expected)
+        
+
+    def test_constructor2(self):
         try:
             sld = StyledLayerDescriptor('junk')
             self.fail("Error")
@@ -28,24 +37,39 @@ class SLD_Test(TestCase):
             # Good, failure on a junk file.
             pass
 
-    def test_sld_version(self):
-        self.assertEqual( self._sld.version, "1.0.0" )
+    def test_sld0_version(self):
+        self.assertEqual( self._sld0.version, "1.0.0" )
 
-    def test_sld_ns(self):
-        self.assertEqual( self._sld.xmlns, 'http://www.opengis.net/sld' )
+    def test_sld0_ns(self):
+        self.assertEqual( self._sld0.xmlns, 'http://www.opengis.net/sld' )
 
-    def test_sld_namedlayer(self):
-        self.assertTrue( isinstance(self._sld.NamedLayer, NamedLayer), "NamedLayer property is not the proper class.")
+    def test_sld0_namedlayer1(self):
+        self.assertTrue( isinstance(self._sld0.NamedLayer, NamedLayer), "NamedLayer property is not the proper class.")
+
+    def test_sld0_namedlayer2(self):
+        self.assertTrue( self._sld1.NamedLayer is None )
+
+        sld = copy.deepcopy(self._sld1)
+
+        sld.create_namedlayer()
+        self.assertFalse( sld.NamedLayer is None )
 
     def test_namedlayer_name(self):
         expected = 'poptot'
-        self.assertEqual( self._sld.NamedLayer.Name, expected, "NamedLayer was named '%s', not '%s'" % (self._sld.NamedLayer.Name, expected,))
+        self.assertEqual( self._sld0.NamedLayer.Name, expected, "NamedLayer was named '%s', not '%s'" % (self._sld0.NamedLayer.Name, expected,))
 
-    def test_namedlayer_userstyle(self):
-        self.assertTrue( isinstance(self._sld.NamedLayer.UserStyle, UserStyle), "UserStyle property is not the proper class.")
+    def test_namedlayer_userstyle1(self):
+        self.assertTrue( isinstance(self._sld0.NamedLayer.UserStyle, UserStyle), "UserStyle property is not the proper class.")
+
+    def test_namedlayer_userstyle2(self):
+        sld = copy.deepcopy(self._sld1)
+
+        sld.create_namedlayer()
+
+        self.assertTrue( sld.NamedLayer.UserStyle is None)
 
     def test_userstyle_title(self):
-        sld = copy.deepcopy(self._sld)
+        sld = copy.deepcopy(self._sld0)
         us = sld.NamedLayer.UserStyle 
         expected = 'Population'
         self.assertEqual( us.Title, expected, "UserStyle Title was '%s', not '%s'" % (us.Title, expected,))
@@ -65,7 +89,7 @@ class SLD_Test(TestCase):
         self.assertEqual( actual, expected, "UserStyle was not serialized correctly.\n%s" % actual )
 
     def test_userstyle_abstract(self):
-        sld = copy.deepcopy(self._sld)
+        sld = copy.deepcopy(self._sld0)
         us = sld.NamedLayer.UserStyle
         expected = 'A grayscale style showing the population numbers in a given geounit.'
         self.assertEqual( us.Abstract, expected, "UserStyle Abstract was '%s', not '%s'" % (us.Abstract, expected,))
@@ -85,15 +109,15 @@ class SLD_Test(TestCase):
         self.assertEqual( actual, expected, "UserStyle was not serialized correctly.\n%s" % actual )
 
     def test_userstyle_featuretypestyle(self):
-        self.assertTrue( isinstance(self._sld.NamedLayer.UserStyle.FeatureTypeStyle, FeatureTypeStyle), "FeatureTypeStyle property is not the proper class.")
+        self.assertTrue( isinstance(self._sld0.NamedLayer.UserStyle.FeatureTypeStyle, FeatureTypeStyle), "FeatureTypeStyle property is not the proper class.")
 
     def test_featuretypestyle_rules(self):
-        rules = self._sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules
+        rules = self._sld0.NamedLayer.UserStyle.FeatureTypeStyle.Rules
         self.assertEqual( len(rules), 6 )
         self.assertTrue( isinstance(rules[0], Rule), "Rule item in list is not the proper class." )
 
     def test_rule_title(self):
-        sld = copy.deepcopy(self._sld)
+        sld = copy.deepcopy(self._sld0)
         rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
 
         expected = "> 880"
