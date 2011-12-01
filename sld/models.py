@@ -1,3 +1,18 @@
+"""
+   Copyright 2011 David Zwarg <dzwarg@azavea.com>
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+"""
 from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError
 import urllib2
 from tempfile import TemporaryFile
@@ -90,21 +105,33 @@ class PropertyCriterion(SLDNode):
 
 
 class Filter(SLDNode):
-    def __init__(self, parent=None, nsmap=None, propname=None, comparitor=None, value=None):
+    def __init__(self, parent, nsmap):
         super(Filter, self).__init__(parent, nsmap)
-        self._node = self._parent.xpath('ogc:Filter', namespaces=self._nsmap)[0]
+        xpath = self._parent.xpath('ogc:Filter', namespaces=self._nsmap)
+        if len(xpath) == 1:
+            self._node = xpath[0]
+        else:
+            self._node = self._parent.makeelement('{%s}Filter' % self._nsmap['ogc'], nsmap=self._nsmap)
 
     def __add__(x, y):
         elem = x._node.makeelement('{%s}And' % x._nsmap['ogc'])
         elem.append(copy.copy(x._node[0]))
         elem.append(copy.copy(y._node[0]))
-        return elem
+
+        f = Filter(x._parent, x._nsmap)
+        f._node.append(elem)
+
+        return f
 
     def __or__(x, y):
         elem = x._node.makeelement('{%s}Or' % x._nsmap['ogc'])
         elem.append(copy.copy(x._node[0]))
         elem.append(copy.copy(y._node[0]))
-        return elem
+
+        f = Filter(x._parent, x._nsmap)
+        f._node.append(elem)
+
+        return f
 
     def __getattr__(self, name):
         if not name.startswith('PropertyIs'):
@@ -124,7 +151,7 @@ class Filter(SLDNode):
         if len(xpath) > 0:
             xpath[0] = value
         else:
-            elem = self._node.makeelement('{%s}'+name % self._nsmap['ogc'], nsmap=self._nsmap)
+            elem = self._node.makeelement('{%s}%s' % (self._nsmap['ogc'], name), nsmap=self._nsmap)
             self._node.append(elem)
 
     def __delattr__(self, name):

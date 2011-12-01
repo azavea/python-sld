@@ -1,10 +1,18 @@
 """
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
+   Copyright 2011 David Zwarg <dzwarg@azavea.com>
 
-Replace these with more appropriate tests for your application.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 """
-
 from unittest import TestCase
 from models import *
 import copy
@@ -337,5 +345,96 @@ class SLD_Test(TestCase):
         self.assertEqual( rfilter.PropertyIsGreaterThan.PropertyName, 'valueE' )
         self.assertEqual( rfilter.PropertyIsGreaterThan.Literal, '10' )
 
+    def test_filter_neq(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        rfilter = rule.create_filter('valueF', '!=', '0.01')
+
+        self.assertTrue( rfilter.PropertyIsEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLessThan is None )
+        self.assertTrue( rfilter.PropertyIsLessThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThan is None )
+        self.assertTrue( rfilter.PropertyIsGreaterThanOrEqualTo is None )
+        self.assertTrue( rfilter.PropertyIsLike is None )
+        self.assertFalse( rfilter.PropertyIsNotEqualTo is None )
+        self.assertEqual( rfilter.PropertyIsNotEqualTo.PropertyName, 'valueF' )
+        self.assertEqual( rfilter.PropertyIsNotEqualTo.Literal, '0.01' )
+
+    def test_filter_and(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        
+        filter1 = Filter(rule._node, rule._nsmap)
+        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1._node, filter1._nsmap, 'PropertyIsGreaterThan')
+        filter1.PropertyIsGreaterThan.PropertyName = 'number'
+        filter1.PropertyIsGreaterThan.Literal = '-10'
+
+        filter2 = Filter(rule._node, rule._nsmap)
+        filter2.PropertyIsLessThanOrEqualTo = PropertyCriterion(filter2._node, filter2._nsmap, 'PropertyIsLessThanOrEqualTo')
+        filter2.PropertyIsLessThanOrEqualTo.PropertyName = 'number'
+        filter2.PropertyIsLessThanOrEqualTo.Literal = '10'
+
+        rule.Filter = filter1 + filter2
+
+        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThanOrEqualTo><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsLessThanOrEqualTo></ogc:And></ogc:Filter></sld:Rule>"""
+        actual = etree.tostring(rule._node, with_tail=False)
+        self.assertEqual(actual, expected)
+
+    def test_filter_or(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        
+        filter1 = Filter(rule._node, rule._nsmap)
+        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1._node, filter1._nsmap, 'PropertyIsGreaterThan')
+        filter1.PropertyIsGreaterThan.PropertyName = 'number'
+        filter1.PropertyIsGreaterThan.Literal = '10'
+
+        filter2 = Filter(rule._node, rule._nsmap)
+        filter2.PropertyIsLessThan= PropertyCriterion(filter2._node, filter2._nsmap, 'PropertyIsLessThan')
+        filter2.PropertyIsLessThan.PropertyName = 'number'
+        filter2.PropertyIsLessThan.Literal = '-10'
+
+        rule.Filter = filter1 | filter2
+
+        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><ogc:Filter><ogc:Or><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan></ogc:Or></ogc:Filter></sld:Rule>"""
+        actual = etree.tostring(rule._node, with_tail=False)
+        self.assertEqual(actual, expected)
+
+    def test_filter_and_or(self):
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer()
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule()
+        
+        filter1 = Filter(rule._node, rule._nsmap)
+        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1._node, filter1._nsmap, 'PropertyIsGreaterThan')
+        filter1.PropertyIsGreaterThan.PropertyName = 'number'
+        filter1.PropertyIsGreaterThan.Literal = '10'
+
+        filter2 = Filter(rule._node, rule._nsmap)
+        filter2.PropertyIsLessThan = PropertyCriterion(filter2._node, filter2._nsmap, 'PropertyIsLessThan')
+        filter2.PropertyIsLessThan.PropertyName = 'number'
+        filter2.PropertyIsLessThan.Literal = '-10'
+
+        filter3 = Filter(rule._node, rule._nsmap)
+        filter3.PropertyIsEqualTo = PropertyCriterion(filter3._node, filter3._nsmap, 'PropertyIsEqualTo')
+        filter3.PropertyIsEqualTo.PropertyName = 'value'
+        filter3.PropertyIsEqualTo.Literal = 'yes'
+
+        rule.Filter = filter1 + (filter2 | filter3)
+
+        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:Or><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan><ogc:PropertyIsEqualTo><ogc:PropertyName>value</ogc:PropertyName><ogc:Literal>yes</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Or></ogc:And></ogc:Filter></sld:Rule>"""
+        actual = etree.tostring(rule._node, with_tail=False, pretty_print=False)
+        self.assertEqual(actual, expected)
 
 
