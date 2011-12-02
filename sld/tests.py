@@ -20,11 +20,23 @@ from lxml import etree
 import settings
 
 class SLD_Test(TestCase):
+    """
+    All tests for django-sld are contained in this TestCase class.
+    """
+
+    # Store a parsed SLD, with known styles and structure
     _sld0 = None
+
+    # Store a dynamically generated SLD
     _sld1 = None
+
+    # A flag to indicate if the test fixture has setup logging.
     _logging = False
 
     def setUp(self):
+        """
+        Set up the test fixture.
+        """
         if not SLD_Test._logging:
             if settings.DEBUG:
                 logging.basicConfig(format='%(message)s',level=logging.DEBUG)
@@ -36,6 +48,9 @@ class SLD_Test(TestCase):
 
 
     def test_constructor1(self):
+        """
+        Test an empty constructor, and make sure the SLD is valid.
+        """
         sld = StyledLayerDescriptor()
 
         self.assertTrue( 'sld' in sld._nsmap )
@@ -50,6 +65,9 @@ class SLD_Test(TestCase):
         
 
     def test_constructor2(self):
+        """
+        Test a constructor on a bogus file.
+        """
         try:
             sld = StyledLayerDescriptor('junk')
             self.fail("Error")
@@ -58,15 +76,27 @@ class SLD_Test(TestCase):
             pass
 
     def test_sld_version(self):
+        """
+        Test the SLD version on the root element.
+        """
         self.assertEqual( self._sld0.version, "1.0.0" )
 
     def test_sld_ns(self):
+        """
+        Test the namespace on the root element.
+        """
         self.assertEqual( self._sld0.xmlns, 'http://www.opengis.net/sld' )
 
     def test_sld_namedlayer1(self):
+        """
+        Test the object type of the NamedLayer property.
+        """
         self.assertTrue( isinstance(self._sld0.NamedLayer, NamedLayer), "NamedLayer property is not the proper class.")
 
     def test_sld_namedlayer2(self):
+        """
+        Test the creation and construction of a NamedLayer element.
+        """
         self.assertTrue( self._sld1.NamedLayer is None )
 
         sld = copy.deepcopy(self._sld1)
@@ -78,13 +108,22 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_namedlayer_name(self):
+        """
+        Test the proper parsing of the name of the NamedLayer.
+        """
         expected = 'poptot'
         self.assertEqual( self._sld0.NamedLayer.Name, expected, "NamedLayer was named '%s', not '%s'" % (self._sld0.NamedLayer.Name, expected,))
 
     def test_namedlayer_userstyle1(self):
+        """
+        Test the object type of the UserStyle property.
+        """
         self.assertTrue( isinstance(self._sld0.NamedLayer.UserStyle, UserStyle), "UserStyle property is not the proper class.")
 
     def test_namedlayer_userstyle2(self):
+        """
+        Test the proper parsing of the UserStyle property.
+        """
         sld = copy.deepcopy(self._sld1)
 
         sld.create_namedlayer('test named layer')
@@ -99,6 +138,9 @@ class SLD_Test(TestCase):
         self.assertFalse(sld.validate())
 
     def test_userstyle_title1(self):
+        """
+        Test the parsing of the UserStyle Title, and proper rendering.
+        """
         sld = copy.deepcopy(self._sld0)
         us = sld.NamedLayer.UserStyle 
         expected = 'Population'
@@ -122,6 +164,9 @@ class SLD_Test(TestCase):
         self.assertFalse(sld.validate())
 
     def test_userstyle_title2(self):
+        """
+        Test the construction of the UserStyle Title, and proper rendering.
+        """
         sld = copy.deepcopy(self._sld1)
         sld.create_namedlayer('test named layer')
         sld.NamedLayer.create_userstyle()
@@ -142,6 +187,9 @@ class SLD_Test(TestCase):
         self.assertFalse(sld.validate())
 
     def test_userstyle_abstract1(self):
+        """
+        Test the parsing of the UserStyle Abstract, and proper rendering.
+        """
         sld = copy.deepcopy(self._sld0)
         us = sld.NamedLayer.UserStyle
         expected = 'A grayscale style showing the population numbers in a given geounit.'
@@ -165,6 +213,9 @@ class SLD_Test(TestCase):
         self.assertFalse(sld.validate())
 
     def test_userstyle_abstract2(self):
+        """
+        Test the construction of the UserStyle Abstract, and proper rendering.
+        """
         sld = copy.deepcopy(self._sld1)
         sld.create_namedlayer('test named layer')
         sld.NamedLayer.create_userstyle()
@@ -185,9 +236,15 @@ class SLD_Test(TestCase):
         self.assertFalse(sld.validate())
 
     def test_userstyle_featuretypestyle1(self):
+        """
+        Test the object type of the FeatureTypeStyle property.
+        """
         self.assertTrue( isinstance(self._sld0.NamedLayer.UserStyle.FeatureTypeStyle, FeatureTypeStyle), "FeatureTypeStyle property is not the proper class.")
 
     def test_userstyle_featuretypestyle2(self):
+        """
+        Test the construction of a new FeatureTypeStyle property.
+        """
         sld = copy.deepcopy(self._sld1)
         sld.create_namedlayer('test named layer')
         sld.NamedLayer.create_userstyle()
@@ -202,11 +259,17 @@ class SLD_Test(TestCase):
         self.assertFalse(sld.validate())
 
     def test_featuretypestyle_rules1(self):
+        """
+        Test the parsing of the Rules property.
+        """
         rules = self._sld0.NamedLayer.UserStyle.FeatureTypeStyle.Rules
         self.assertEqual( len(rules), 6 )
         self.assertTrue( isinstance(rules[0], Rule), "Rule item in list is not the proper class." )
 
     def test_featuretypestyle_rules2(self):
+        """
+        Test the construction of the Rules property.
+        """
         sld = copy.deepcopy(self._sld1)
         sld.create_namedlayer('test named layer')
         sld.NamedLayer.create_userstyle()
@@ -224,6 +287,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_rule_title1(self):
+        """
+        Test the parsing of the individual Rule properties.
+        """
         sld = copy.deepcopy(self._sld0)
         rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
 
@@ -255,6 +321,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_rule_title2(self):
+        """
+        Test the construction of new Rule properties.
+        """
         sld = copy.deepcopy(self._sld1)
         sld.create_namedlayer('test named layer')
         sld.NamedLayer.create_userstyle()
@@ -275,6 +344,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_rule_filter1(self):
+        """
+        Test the parsing of the Filter property.
+        """
         sld = copy.deepcopy(self._sld0)
         rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
 
@@ -287,6 +359,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_rule_filter_none(self):
+        """
+        Test the construction of the Filter property.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -299,6 +374,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_eq(self):
+        """
+        Test the construction of an equality filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -320,6 +398,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_lte(self):
+        """
+        Test the construction of a less-than-or-equal Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -341,6 +422,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_lt(self):
+        """
+        Test the construction of a less-than Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -362,6 +446,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_gte(self):
+        """
+        Test the construction of a greater-than-or-equal Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -383,6 +470,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_gt(self):
+        """
+        Test the construction of a greater-than Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -404,6 +494,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_neq(self):
+        """
+        Test the construction of an inequality Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -425,6 +518,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_and(self):
+        """
+        Test the construction of a logical-and Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -451,6 +547,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_or(self):
+        """
+        Test the construction of a logical-or Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -477,6 +576,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_filter_and_or(self):
+        """
+        Test the construction of a logical-and combined with a logical-or Filter.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -508,6 +610,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_rule_polysymbolizer1(self):
+        """
+        Test the parsing of the PolygonSymbolizer property.
+        """
         sld = copy.deepcopy(self._sld0)
         rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
 
@@ -517,6 +622,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_rule_polysymbolizer2(self):
+        """
+        Test the construction of a PolygonSymbolizer property.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -532,6 +640,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
         
     def test_polysymoblizer_fill1(self):
+        """
+        Test the parsing of a Fill property.
+        """
         sld = copy.deepcopy(self._sld0)
         rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
 
@@ -545,6 +656,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
 
     def test_polysymbolizer_fill2(self):
+        """
+        Test the construction of a Fill property.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
@@ -560,6 +674,9 @@ class SLD_Test(TestCase):
         self.assertTrue(sld.validate())
         
     def test_fill_cssparameter1(self):
+        """
+        Test the parsing of the CssParameter property.
+        """
         fill = self._sld0.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0].PolygonSymbolizer.Fill
 
         self.assertFalse( fill.CssParameters is None )
@@ -571,6 +688,9 @@ class SLD_Test(TestCase):
         self.assertEqual( len(fill.CssParameters), 2 )
 
     def test_fill_cssparameter2(self):
+        """
+        Test the construction of the CssParameter property.
+        """
         sld = copy.deepcopy(self._sld1)
         namedlayer = sld.create_namedlayer('test named layer')
         userstyle = namedlayer.create_userstyle()
