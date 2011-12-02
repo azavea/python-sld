@@ -17,13 +17,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from unittest import TestCase
-from models import *
-import copy, logging
+from sld import *
+import unittest, copy
 from lxml import etree
-import settings
 
-class SLD_Test(TestCase):
+class SLD_Test(unittest.TestCase):
     """
     All tests for django-sld are contained in this TestCase class.
     """
@@ -34,20 +32,12 @@ class SLD_Test(TestCase):
     # Store a dynamically generated SLD
     _sld1 = None
 
-    # A flag to indicate if the test fixture has setup logging.
-    _logging = False
-
     def setUp(self):
         """
         Set up the test fixture.
         """
-        if not SLD_Test._logging:
-            if settings.DEBUG:
-                logging.basicConfig(format='%(message)s',level=logging.DEBUG)
-            SLD_Test._logging = True
-        
         if SLD_Test._sld0 is None:
-            SLD_Test._sld0 = StyledLayerDescriptor('sld/test/style.sld')
+            SLD_Test._sld0 = StyledLayerDescriptor('test/style.sld')
             SLD_Test._sld1 = StyledLayerDescriptor()
 
 
@@ -710,3 +700,6 @@ class SLD_Test(TestCase):
         
         sld.normalize()
         self.assertTrue(sld.validate())
+
+if __name__ == '__main__':
+    unittest.main()
