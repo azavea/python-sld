@@ -1,23 +1,34 @@
 """
-   Copyright 2011 David Zwarg <dzwarg@azavea.com>
+StyledLayerDescriptor library for generating SLD documents.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+SLD documents are used to style cartographic representations of geometric
+features in most professional and desktop GIS applications.
 
-   http://www.apache.org/licenses/LICENSE-2.0
+Specification
+=============
+The SLD specification is available from the Open Geospatial Consortium,
+at U{http://www.opengeospatial.org/standards/sld}
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+License
+=======
+Copyright 2011 David Zwarg <U{dzwarg@azavea.com}>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+U{http://www.apache.org/licenses/LICENSE-2.0}
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError, tostring
 import urllib2
 from tempfile import NamedTemporaryFile
-import os, copy, logging, settings
-from StringIO import StringIO
+import os, copy, logging
 
 class SLDNode(object):
     """
@@ -1182,10 +1193,10 @@ class FeatureTypeStyle(SLDNode):
     @property
     def Rules(self):
         """
-        Get the L{Rules} pythonic list helper for all L{Rule} objects in this 
+        Get the L{sld.Rules} pythonic list helper for all L{Rule} objects in this 
         style.
 
-        @rtype: L{Rules}
+        @rtype: L{sld.Rules}
         @return: A list of all rules applied to this style.
         """
         return Rules(self._node)
