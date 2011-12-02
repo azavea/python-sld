@@ -24,6 +24,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+@author: David Zwarg
+@contact: dzwarg@azavea.com
+@copyright: 2011, Azavea
+@license: Apache 2.0
+@version: 1.0
+@newfield prop: Property, Properties
 """
 from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError, tostring
 import urllib2
@@ -40,13 +47,13 @@ class SLDNode(object):
     for child SLDNode objects.
     """
 
-    # The defined namespaces in SLD documents.
     _nsmap = {
         'sld':"http://www.opengis.net/sld",
         'ogc':"http://www.opengis.net/ogc",
         'xlink':"http://www.w3.org/1999/xlink",
         'xsi':"http://www.w3.org/2001/XMLSchema-instance"
     }
+    """Defined namespaces in SLD documents."""
 
     def __init__(self, parent):
         """
@@ -434,29 +441,25 @@ class Symbolizer(SLDNode):
     Abstract base class for all symbolizer nodes. Symbolizer nodes are those
     that contain L{Fill}, L{Font}, or L{Stroke} children.
 
-    Additional Properties
-    =====================
+    All derived Symbolizer classes have access to the Fill, Font, and Stroke properties.
 
-    All derived Symbolizer classes have access to the following set of 
-    additional properties.
+    @prop: B{Fill}
 
-    Fill
-    ----
-    The element that contains the L{CssParameter} nodes for describing the polygon fill styles.
+        The element that contains the L{CssParameter} nodes for describing the polygon fill styles.
 
-    B{Type}: L{CssParameter}
+        I{Type}: L{Fill}
 
-    Font
-    ----
-    The element that contains the L{CssParameter} nodes for describing the font styles.
+    @prop: B{Font}
 
-    B{Type}: L{CssParameter}
+        The element that contains the L{CssParameter} nodes for describing the font styles.
 
-    Stroke
-    ------
-    The element that contains the L{CssParameter} nodes for describing the line styles.
+        I{Type}: L{Font}
 
-    B{Type}: L{CssParameter}
+    @prop: B{Stroke}
+
+        The element that contains the L{CssParameter} nodes for describing the line styles.
+
+        I{Type}: L{Stroke}
     """
     def __init__(self, parent, name):
         """
@@ -521,22 +524,19 @@ class PolygonSymbolizer(Symbolizer):
     A symbolizer for polygon geometries. A PolygonSymbolizer is a child of a
     L{Rule} element.
 
-    Additional Properties
-    =====================
+    @prop: Fill
+    
+        The element that contains the L{CssParameter} nodes for describing the 
+        polygon fill styles.
 
-    Fill
-    ----
-    The element that contains the L{CssParameter} nodes for describing the 
-    polygon fill styles.
+        I{Type}: L{Fill}
 
-    B{Type}: L{Fill}
+    @prop: Stroke
+    
+        The element that contains the L{CssParameter} nodes for describing the line
+        styles.
 
-    Stroke
-    ------
-    The element that contains the L{CssParameter} nodes for describing the line
-    styles.
-
-    B{Type}: L{Stroke}
+        I{Type}: L{Stroke}
     """
     def __init__(self, parent):
         """
@@ -553,16 +553,12 @@ class LineSymbolizer(Symbolizer):
     A symbolizer for line geometries. A LineSymbolizer is a child of a
     L{Rule} element.
 
-    Additional Properties
-    =====================
-
-    Stroke
-    ------
+    @prop: Stroke
     
-    The element that contains the L{CssParameter} nodes for describing the line
-    styles.
+        The element that contains the L{CssParameter} nodes for describing the line
+        styles.
 
-    B{Type}: L{Stroke}
+        I{Type}: L{Stroke}
     """
     def __init__(self, parent):
         """
@@ -579,15 +575,12 @@ class TextSymbolizer(Symbolizer):
     A symbolizer for text labels. A TextSymbolizer is a child of a L{Rule}
     element.
 
-    Additional Properties
-    =====================
-
-    Fill
-    ----
-    The element that contains the L{CssParameter} nodes for describing the
-    character fill styles.
+    @prop: Fill
     
-    B{Type}: L{Fill}
+        The element that contains the L{CssParameter} nodes for describing the
+        character fill styles.
+    
+        I{Type}: L{Fill}
     """
     def __init__(self, parent): 
         """
@@ -604,34 +597,31 @@ class Mark(Symbolizer):
     A graphic mark for describing points. A Mark is a child of a L{Graphic}
     element.
 
-    Additional Properties
-    =====================
+    @prop: Fill
+    
+        The element that contains the L{CssParameter} nodes for describing the 
+        fill styles.
 
-    Fill
-    ----
-    The element that contains the L{CssParameter} nodes for describing the 
-    fill styles.
+        I{Type}: L{Fill}
 
-    B{Type}: L{Fill}
+    @prop: Stroke
+    
+        The element that contains the L{CssParameter} nodes for describing the 
+        line styles.
 
-    Stroke
-    ------
-    The element that contains the L{CssParameter} nodes for describing the 
-    line styles.
+        I{Type}: L{Stroke}
 
-    B{Type}: L{Stroke}
+    @prop: WellKnownName
+    
+        A string describing the Mark, which may be one of:
+            - circle
+            - cross
+            - square
+            - star
+            - triangle
+            - x
 
-    WellKnownName
-    -------------
-    A string describing the Mark, which may be one of:
-        - circle
-        - cross
-        - square
-        - star
-        - triangle
-        - x
-
-    B{Type}: string
+        I{Type}: string
     """
     def __init__(self, parent):
         """
@@ -651,32 +641,29 @@ class Graphic(SLDNode):
     A Graphic node represents a graphical mark for representing points. A 
     Graphic is a child of a L{PointSymbolizer} element.
 
-    Additional Properties
-    =====================
+    @prop: Mark
+    
+        The element that contains the L{CssParameter} nodes for describing the point styles.
 
-    Mark
-    ----
-    The element that contains the L{CssParameter} nodes for describing the point styles.
+        I{Type}: L{Mark}
 
-    B{Type}: L{Mark}
+    @prop: Opacity
+    
+        Bewteen 0 (completely transparent) and 1 (completely opaque)
 
-    Opacity
-    -------
-    Bewteen 0 (completely transparent) and 1 (completely opaque)
+        I{Type}: float
 
-    B{Type}: float
+    @prop: Size
+    
+        The size of the graphic, in pixels.
 
-    Size
-    ----
-    The size of the graphic, in pixels.
+        I{Type}: integer
 
-    B{Type}: integer
+    @prop: Rotation
+    
+        Clockwise degrees of rotation.
 
-    Rotation
-    --------
-    Clockwise degrees of rotation.
-
-    B{Type}: float
+        I{Type}: float
     """
     def __init__(self, parent):
         """
@@ -708,14 +695,11 @@ class PointSymbolizer(SLDNode):
     A symbolizer for point geometries. A PointSymbolizer is a child of a 
     L{Rule} element.
 
-    Additional Properties
-    =====================
+    @prop: Graphic
+    
+        The configuration of the point graphic.
 
-    Graphic
-    -------
-    The configuration of the point graphic.
-
-    B{Type}: L{Graphic}
+        I{Type}: L{Graphic}
     """
     def __init__(self, parent):
         """
@@ -751,20 +735,17 @@ class PropertyCriterion(SLDNode):
         - PropertyIsGreaterThanOrEqual
         - PropertyIsLike
 
-    Additional Properties
-    =====================
+    @prop: PropertyName
+    
+        The name of the property to use in the comparison.
 
-    PropertyName
-    ------------
-    The name of the property to use in the comparison.
+        I{Type}: string
 
-    B{Type}: string
+    @prop: Literal
+    
+        The value of the property.
 
-    Literal
-    -------
-    The value of the property.
-
-    B{Type}: string
+        I{Type}: string
     """
     def __init__(self, parent, name):
         """
@@ -808,44 +789,41 @@ class Filter(SLDNode):
 
         >>> rule.Filter = filter1 | (filter2 + filter3)
 
-    Additional Properties
-    =====================
+    @prop: PropertyIsEqualTo
+    
+        A specification of property (=) equality.
 
-    PropertyIsEqualTo
-    -----------------
-    A specification of property (=) equality.
+        I{Type}: L{PropertyCriterion}
 
-    B{Type}: L{PropertyCriterion}
+    @prop: PropertyIsNotEqualTo
+    
+        A specification of property (!=) inequality.
 
-    PropertyIsNotEqualTo
-    --------------------
-    A specification of property (!=) inequality.
+        I{Type}: L{PropertyCriterion}
 
-    B{Type}: L{PropertyCriterion}
+    @prop: PropertyIsLessThan
+    
+        A specification of property less-than (<) comparison.
 
-    PropertyIsLessThan
-    ------------------
-    A specification of property less-than (<) comparison.
+        I{Type}: L{PropertyCriterion}
 
-    B{Type}: L{PropertyCriterion}
+    @prop: PropertyIsLessThanOrEqualTo
+    
+        A specification of property less-than-or-equal-to (<=) comparison.
 
-    PropertyIsLessThanOrEqualTo
-    ---------------------------
-    A specification of property less-than-or-equal-to (<=) comparison.
+        I{Type}: L{PropertyCriterion}
 
-    B{Type}: L{PropertyCriterion}
+    @prop: PropertyIsGreaterThan
+    
+        A specification of property greater-than (>) comparison,
 
-    PropertyIsGreaterThan
-    ---------------------
-    A specification of property greater-than (>) comparison,
+        I{Type}: L{PropertyCriterion}
 
-    B{Type}: L{PropertyCriterion}
+    @prop: PropertyIsGreaterThanOrEqualTo
+    
+        A specification of property greater-than-or-equal-to (>=) comparison.
 
-    PropertyIsGreaterThanOrEqualTo
-    ------------------------------
-    A specification of property greater-than-or-equal-to (>=) comparison.
-
-    B{Type}: L{PropertyCriterion}
+        I{Type}: L{PropertyCriterion}
     """
     def __init__(self, parent):
         """
@@ -958,44 +936,41 @@ class Rule(SLDNode):
     A rule object contains a title, an optional L{Filter}, and one or more 
     L{Symbolizer}s. A Rule is a child of a L{FeatureTypeStyle}.
 
-    AdditionalProperties
-    ====================
+    @prop: Title
+    
+        The title of this rule. This is required for a valid SLD.
 
-    Title
-    -----
-    The title of this rule. This is required for a valid SLD.
+        I{Type}: string
 
-    B{Type}: string
+    @prop: Filter
+    
+        Optional. A filter defines logical comparisons against properties.
 
-    Filter
-    ------
-    Optional. A filter defines logical comparisons against properties.
+        I{Type}: L{Filter}
 
-    B{Type}: L{Filter}
+    @prop: PolygonSymbolizer
 
-    PolygonSymbolizer
-    -----------------
-    A symbolizer that defines how polygons should be rendered.
+        A symbolizer that defines how polygons should be rendered.
 
-    B{Type}: L{PolygonSymbolizer}
+        I{Type}: L{PolygonSymbolizer}
 
-    LineSymbolizer
-    --------------
-    A symbolizer that defines how lines should be rendered.
+    @prop: LineSymbolizer
+    
+        A symbolizer that defines how lines should be rendered.
 
-    B{Type}: L{LineSymbolizer}
+        I{Type}: L{LineSymbolizer}
 
-    TextSymbolizer
-    --------------
-    A symbolizer that defines how text should be rendered.
+    @prop: TextSymbolizer
+    
+        A symbolizer that defines how text should be rendered.
 
-    B{Type}: L{TextSymbolizer}
+        I{Type}: L{TextSymbolizer}
 
-    PointSymbolizer
-    ---------------
-    A symbolizer that defines how points should be rendered.
+    @prop: PointSymbolizer
+    
+        A symbolizer that defines how points should be rendered.
 
-    B{Type}: L{PointSymbolizer}
+        I{Type}: L{PointSymbolizer}
     """
     def __init__(self, parent, index):
         """
@@ -1250,26 +1225,23 @@ class UserStyle(SLDNode):
     """
     A UserStyle object. A UserStyle is a child of a L{StyledLayerDescriptor}.
 
-    AdditionalProperties
-    ====================
+    @prop: Title
+    
+        The title of the UserStyle.
 
-    Title
-    -----
-    The title of the UserStyle.
+        I{Type}: string
 
-    B{Type}: string
+    @prop: Abstract
+    
+        The abstract describing this UserStyle.
 
-    Abstract
-    --------
-    The abstract describing this UserStyle.
+        I{Type}: string
 
-    B{Type}: string
+    @prop: FeatureTypeStyle
+    
+        The styling for the feature type.
 
-    FeatureTypeStyle
-    ----------------
-    The styling for the feature type.
-
-    B{Type}: L{FeatureTypeStyle}
+        I{Type}: L{FeatureTypeStyle}
     """
     def __init__(self, parent):
         """
@@ -1311,20 +1283,17 @@ class NamedLayer(SLDNode):
     A named layer contains a name and a user style. A NamedLayer is a child of
     a L{StyledLayerDescriptor}.
 
-    Additional Properties
-    =====================
+    @prop: Name
+    
+        The name of the UserStyle.
 
-    Name
-    ----
-    The name of the UserStyle.
+        I{Type}: string
 
-    B{Type}: string
+    @prop: UserStyle
+    
+        The custom styling for this named layer.
 
-    UserStyle
-    ---------
-    The custom styling for this named layer.
-
-    B{Type}: L{UserStyle}
+        I{Type}: L{UserStyle}
     """
     def __init__(self, parent):
         """
@@ -1363,14 +1332,11 @@ class StyledLayerDescriptor(SLDNode):
     """
     An object representation of an SLD document.
 
-    Additional Properties
-    =====================
+    @prop: NamedLayer
+    
+        The named layer that this styling applies to.
 
-    NamedLayer
-    ----------
-    The named layer that this styling applies to.
-
-    B{Type}: L{NamedLayer}
+        I{Type}: L{NamedLayer}
     """
 
     _cached_schema = None

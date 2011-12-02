@@ -16,6 +16,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+@author: David Zwarg
+@contact: dzwarg@azavea.com
+@copyright: 2011, Azavea
+@license: Apache 2.0
+@version: 1.0
 """
 from sld import *
 import unittest, copy
@@ -26,11 +32,11 @@ class SLD_Test(unittest.TestCase):
     All tests for django-sld are contained in this TestCase class.
     """
 
-    # Store a parsed SLD, with known styles and structure
     _sld0 = None
+    """Store a parsed SLD, with known styles and structure"""
 
-    # Store a dynamically generated SLD
     _sld1 = None
+    """Store a dynamically generated SLD"""
 
     def setUp(self):
         """
