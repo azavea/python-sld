@@ -67,18 +67,15 @@ class SLDNode(object):
         self._node = None
    
     @staticmethod
-    def makeproperty(ns, node, cls=None, name=None, docstring=''):
+    def makeproperty(ns, cls=None, name=None, docstring=''):
         """
-        Make a property on an instance of an SLDNode, which relates to a specific
-        child node in the SLD specification. If cls is omitted, the property is
-        assumed to be a text node, with no corresponding class object. If name is
-        omitted, the property is assumed to be a complex node, with a corresponding
-        class wrapper.
+        Make a property on an instance of an SLDNode. If cls is omitted, the 
+        property is assumed to be a text node, with no corresponding class 
+        object. If name is omitted, the property is assumed to be a complex 
+        node, with a corresponding class wrapper.
 
         @type         ns: string
         @param        ns: The namespace of this property's node.
-        @type       node: etree.Element
-        @param      node: The parent node that this property belongs to.
         @type        cls: class
         @param       cls: Optional. The class of the child property.
         @type       name: string
@@ -484,11 +481,11 @@ class Symbolizer(SLDNode):
         else:
             self._node = xpath[0]
 
-        setattr(self.__class__, 'Fill', SLDNode.makeproperty('sld', self._node, cls=Fill, 
+        setattr(self.__class__, 'Fill', SLDNode.makeproperty('sld', cls=Fill, 
             docstring="The parameters for describing the fill styling."))
-        setattr(self.__class__, 'Font', SLDNode.makeproperty('sld', self._node, cls=Font,
+        setattr(self.__class__, 'Font', SLDNode.makeproperty('sld', cls=Font,
             docstring="The parameters for describing the font styling."))
-        setattr(self.__class__, 'Stroke', SLDNode.makeproperty('sld', self._node, cls=Stroke,
+        setattr(self.__class__, 'Stroke', SLDNode.makeproperty('sld', cls=Stroke,
             docstring="The parameters for describing the stroke styling."))
 
     def create_fill(self):
@@ -632,7 +629,7 @@ class Mark(Symbolizer):
         """
         super(Mark, self).__init__(parent, 'Mark')
 
-        setattr(self.__class__, 'WellKnownName', SLDNode.makeproperty('sld', self._node, name='WellKnownName',
+        setattr(self.__class__, 'WellKnownName', SLDNode.makeproperty('sld', name='WellKnownName',
             docstring="The well known name for the mark."))
 
 
@@ -680,13 +677,13 @@ class Graphic(SLDNode):
         else:
             self._node = xpath[0]
 
-        setattr(self.__class__, 'Mark', SLDNode.makeproperty('sld', self._node, cls=Mark,
+        setattr(self.__class__, 'Mark', SLDNode.makeproperty('sld', cls=Mark,
             docstring="The graphic's mark styling."))
-        setattr(self.__class__, 'Opacity', SLDNode.makeproperty('sld', self._node, name='Opacity',
+        setattr(self.__class__, 'Opacity', SLDNode.makeproperty('sld', name='Opacity',
             docstring="The opacity of the graphic."))
-        setattr(self.__class__, 'Size', SLDNode.makeproperty('sld', self._node, name='Size',
+        setattr(self.__class__, 'Size', SLDNode.makeproperty('sld', name='Size',
             docstring="The size of the graphic, in pixels."))
-        setattr(self.__class__, 'Rotation', SLDNode.makeproperty('sld', self._node, name='Rotation',
+        setattr(self.__class__, 'Rotation', SLDNode.makeproperty('sld', name='Rotation',
             docstring="The rotation of the graphic, in degrees clockwise."))
 
 
@@ -716,7 +713,7 @@ class PointSymbolizer(SLDNode):
         else:
             self._node = xpath[0]
 
-        setattr(self.__class__, 'Graphic', SLDNode.makeproperty('sld', self._node, cls=Graphic,
+        setattr(self.__class__, 'Graphic', SLDNode.makeproperty('sld', cls=Graphic,
             docstring="The graphic settings for this point geometry."))
 
 
@@ -765,9 +762,9 @@ class PropertyCriterion(SLDNode):
         else:
             self._node = xpath[0]
 
-        setattr(self.__class__, 'PropertyName', SLDNode.makeproperty('ogc', self._node, name='PropertyName',
+        setattr(self.__class__, 'PropertyName', SLDNode.makeproperty('ogc', name='PropertyName',
             docstring="The name of the property to compare."))
-        setattr(self.__class__, 'Literal', SLDNode.makeproperty('ogc', self._node, name='Literal',
+        setattr(self.__class__, 'Literal', SLDNode.makeproperty('ogc', name='Literal',
             docstring="The literal value of the property to compare against."))
 
 
@@ -982,17 +979,17 @@ class Rule(SLDNode):
         super(Rule, self).__init__(parent)
         self._node = self._parent.xpath('sld:Rule', namespaces=SLDNode._nsmap)[index]
 
-        setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', self._node, name='Title',
+        setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
             docstring="The title of the Rule."))
-        setattr(self.__class__, 'Filter', SLDNode.makeproperty('ogc', self._node, cls=Filter,
+        setattr(self.__class__, 'Filter', SLDNode.makeproperty('ogc', cls=Filter,
             docstring="The optional filter object, with property comparitors."))
-        setattr(self.__class__, 'PolygonSymbolizer', SLDNode.makeproperty('sld', self._node, cls=PolygonSymbolizer,
+        setattr(self.__class__, 'PolygonSymbolizer', SLDNode.makeproperty('sld', cls=PolygonSymbolizer,
             docstring="The optional polygon symbolizer for this rule."))
-        setattr(self.__class__, 'LineSymbolizer', SLDNode.makeproperty('sld', self._node, cls=LineSymbolizer,
+        setattr(self.__class__, 'LineSymbolizer', SLDNode.makeproperty('sld', cls=LineSymbolizer,
             docstring="The optional line symbolizer for this rule."))
-        setattr(self.__class__, 'TextSymbolizer', SLDNode.makeproperty('sld', self._node, cls=TextSymbolizer,
+        setattr(self.__class__, 'TextSymbolizer', SLDNode.makeproperty('sld', cls=TextSymbolizer,
             docstring="The optional text symbolizer for this rule."))
-        setattr(self.__class__, 'PointSymbolizer', SLDNode.makeproperty('sld', self._node, cls=PointSymbolizer,
+        setattr(self.__class__, 'PointSymbolizer', SLDNode.makeproperty('sld', cls=PointSymbolizer,
             docstring="The optional point symbolizer for this rule."))
 
     def normalize(self):
@@ -1253,11 +1250,11 @@ class UserStyle(SLDNode):
         super(UserStyle, self).__init__(parent)
         self._node = self._parent.xpath('sld:UserStyle', namespaces=SLDNode._nsmap)[0]
 
-        setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', self._node, name='Title',
+        setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
             docstring="The title of the UserStyle."))
-        setattr(self.__class__, 'Abstract', SLDNode.makeproperty('sld', self._node, name='Abstract',
+        setattr(self.__class__, 'Abstract', SLDNode.makeproperty('sld', name='Abstract',
             docstring="The abstract of the UserStyle."))
-        setattr(self.__class__, 'FeatureTypeStyle', SLDNode.makeproperty('sld', self._node, cls=FeatureTypeStyle,
+        setattr(self.__class__, 'FeatureTypeStyle', SLDNode.makeproperty('sld', cls=FeatureTypeStyle,
             docstring="The feature type style of the UserStyle."))
 
     def normalize(self):
@@ -1305,9 +1302,9 @@ class NamedLayer(SLDNode):
         super(NamedLayer, self).__init__(parent)
         self._node = self._parent.xpath('sld:NamedLayer', namespaces=SLDNode._nsmap)[0]
 
-        setattr(self.__class__, 'UserStyle', SLDNode.makeproperty('sld', self._node, cls=UserStyle,
+        setattr(self.__class__, 'UserStyle', SLDNode.makeproperty('sld', cls=UserStyle,
             docstring="The UserStyle of the NamedLayer."))
-        setattr(self.__class__, 'Name', SLDNode.makeproperty('sld', self._node, name='Name',
+        setattr(self.__class__, 'Name', SLDNode.makeproperty('sld', name='Name',
             docstring="The name of the layer."))
 
     def normalize(self):
@@ -1384,7 +1381,7 @@ class StyledLayerDescriptor(SLDNode):
         else:
             self._node = Element("{%s}StyledLayerDescriptor" % SLDNode._nsmap['sld'], version="1.0.0", nsmap=SLDNode._nsmap)
 
-        setattr(self.__class__, 'NamedLayer', SLDNode.makeproperty('sld', self._node, cls=NamedLayer,
+        setattr(self.__class__, 'NamedLayer', SLDNode.makeproperty('sld', cls=NamedLayer,
             docstring="The named layer of the SLD."))
 
     def __del__(self):
@@ -1466,11 +1463,11 @@ class StyledLayerDescriptor(SLDNode):
         namedlayer.Name = name
         return namedlayer
 
-    def as_sld(self):
+    def as_sld(self, pretty_print=False):
         """
         Serialize this SLD model into a string.
 
         @rtype: string
         @returns: The content of the SLD.
         """
-        return tostring(self._node)
+        return tostring(self._node, pretty_print=pretty_print)
