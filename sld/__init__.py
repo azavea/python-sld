@@ -1465,3 +1465,12 @@ class StyledLayerDescriptor(SLDNode):
         namedlayer = self.get_or_create_element('sld', 'NamedLayer')
         namedlayer.Name = name
         return namedlayer
+
+    def as_sld(self):
+        """
+        Serialize this SLD model into a string.
+
+        @rtype: string
+        @returns: The content of the SLD.
+        """
+        return tostring(self._node)
