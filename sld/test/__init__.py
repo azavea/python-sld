@@ -527,13 +527,13 @@ class SLD_Test(unittest.TestCase):
         featuretypestyle = userstyle.create_featuretypestyle()
         rule = featuretypestyle.create_rule('test rule', PointSymbolizer)
         
-        filter1 = Filter(rule._node)
-        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1._node, 'PropertyIsGreaterThan')
+        filter1 = Filter(rule)
+        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1, 'PropertyIsGreaterThan')
         filter1.PropertyIsGreaterThan.PropertyName = 'number'
         filter1.PropertyIsGreaterThan.Literal = '-10'
 
-        filter2 = Filter(rule._node)
-        filter2.PropertyIsLessThanOrEqualTo = PropertyCriterion(filter2._node, 'PropertyIsLessThanOrEqualTo')
+        filter2 = Filter(rule)
+        filter2.PropertyIsLessThanOrEqualTo = PropertyCriterion(filter2, 'PropertyIsLessThanOrEqualTo')
         filter2.PropertyIsLessThanOrEqualTo.PropertyName = 'number'
         filter2.PropertyIsLessThanOrEqualTo.Literal = '10'
 
@@ -556,13 +556,13 @@ class SLD_Test(unittest.TestCase):
         featuretypestyle = userstyle.create_featuretypestyle()
         rule = featuretypestyle.create_rule('test rule', PointSymbolizer)
         
-        filter1 = Filter(rule._node)
-        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1._node, 'PropertyIsGreaterThan')
+        filter1 = Filter(rule)
+        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1, 'PropertyIsGreaterThan')
         filter1.PropertyIsGreaterThan.PropertyName = 'number'
         filter1.PropertyIsGreaterThan.Literal = '10'
 
-        filter2 = Filter(rule._node)
-        filter2.PropertyIsLessThan= PropertyCriterion(filter2._node, 'PropertyIsLessThan')
+        filter2 = Filter(rule)
+        filter2.PropertyIsLessThan= PropertyCriterion(filter2, 'PropertyIsLessThan')
         filter2.PropertyIsLessThan.PropertyName = 'number'
         filter2.PropertyIsLessThan.Literal = '-10'
 
@@ -585,18 +585,18 @@ class SLD_Test(unittest.TestCase):
         featuretypestyle = userstyle.create_featuretypestyle()
         rule = featuretypestyle.create_rule('test rule', PointSymbolizer)
         
-        filter1 = Filter(rule._node)
-        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1._node, 'PropertyIsGreaterThan')
+        filter1 = Filter(rule)
+        filter1.PropertyIsGreaterThan = PropertyCriterion(filter1, 'PropertyIsGreaterThan')
         filter1.PropertyIsGreaterThan.PropertyName = 'number'
         filter1.PropertyIsGreaterThan.Literal = '10'
 
-        filter2 = Filter(rule._node)
-        filter2.PropertyIsLessThan = PropertyCriterion(filter2._node, 'PropertyIsLessThan')
+        filter2 = Filter(rule)
+        filter2.PropertyIsLessThan = PropertyCriterion(filter2, 'PropertyIsLessThan')
         filter2.PropertyIsLessThan.PropertyName = 'number'
         filter2.PropertyIsLessThan.Literal = '-10'
 
-        filter3 = Filter(rule._node)
-        filter3.PropertyIsEqualTo = PropertyCriterion(filter3._node, 'PropertyIsEqualTo')
+        filter3 = Filter(rule)
+        filter3.PropertyIsEqualTo = PropertyCriterion(filter3, 'PropertyIsEqualTo')
         filter3.PropertyIsEqualTo.PropertyName = 'value'
         filter3.PropertyIsEqualTo.Literal = 'yes'
 

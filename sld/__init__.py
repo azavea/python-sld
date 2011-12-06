@@ -55,19 +55,26 @@ class SLDNode(object):
     }
     """Defined namespaces in SLD documents."""
 
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new SLDNode. It is not necessary to call this directly, because
         all child classes should initialize the SLDNode internally.
 
         @type  parent: etree.Element
         @param parent: The parent element of this node.
+        @type  descendant: boolean
+        @param descendant: Does this element descend from the parent, or is it a sibling?
         """
-        self._parent = parent
+        if parent is None:
+            self._parent = None
+        elif descendant:
+            self._parent = parent._node
+        else:
+            self._parent = parent._parent
         self._node = None
    
     @staticmethod
-    def makeproperty(ns, cls=None, name=None, docstring=''):
+    def makeproperty(ns, cls=None, name=None, docstring='', descendant=True):
         """
         Make a property on an instance of an SLDNode. If cls is omitted, the 
         property is assumed to be a text node, with no corresponding class 
@@ -82,6 +89,8 @@ class SLDNode(object):
         @param      name: Optional. The name of the child property.
         @type  docstring: string
         @param docstring: Optional. The docstring to attach to the new property.
+        @type  descendant: boolean
+        @param descendant: Does this element descend from the parent, or is it a sibling?
 
         @rtype:  property attribute
         @return: A property attribute for this named property.
@@ -101,7 +110,7 @@ class SLDNode(object):
                     return xpath[0].text
                 else:
                     elem = cls.__new__(cls)
-                    cls.__init__(elem, self._node)
+                    cls.__init__(elem, self, descendant=descendant)
                     return elem
             else:
                 return None
@@ -186,16 +195,18 @@ class CssParameter(SLDNode):
     """
     A css styling parameter. May be a child of L{Fill}, L{Font}, and L{Stroke}.
     """
-    def __init__(self, parent, index):
+    def __init__(self, parent, index, descendant=True):
         """
         Create a new CssParameter from an existing StyleItem.
 
-        @type  parent: Element
-        @param parent: The parent node of the CssParameter.
+        @type  parent: L{StyleItem}
+        @param parent: The parent class object.
         @type   index: integer
         @param  index: The index of the node in the list of all CssParameters in the parent.
+        @type  descendant: boolean
+        @param descendant: Does this element descend from the parent, or is it a sibling?
         """
-        super(CssParameter, self).__init__(parent)
+        super(CssParameter, self).__init__(parent, descendant=descendant)
         self._node = self._parent.xpath('sld:CssParameter', namespaces=SLDNode._nsmap)[index]
 
     def get_name(self):
@@ -262,8 +273,8 @@ class CssParameters(SLDNode):
         """
         Create a new list of CssParameters from the specified parent node.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{StyleItem}
+        @param parent: The parent class item.
         """
         super(CssParameters, self).__init__(parent)
         self._node = None
@@ -284,10 +295,12 @@ class CssParameters(SLDNode):
 
         @type  key: integer
         @param key: The index of the child node.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         @rtype: L{CssParameter}
         @return: The specific L{CssParameter} node.
         """
-        return CssParameter(self._parent, key)
+        return CssParameter(self, key, descendant=False)
 
     def __setitem__(self, key, value):
         """
@@ -317,16 +330,18 @@ class StyleItem(SLDNode):
     """
     Abstract base class for all nodes that contain a list of L{CssParameter} nodes.
     """
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, descendant=True):
         """
         Create a new StyleItem.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Symbolizer}
+        @param parent: The parent class object.
         @type    name: string
         @param   name: The name of the node.
+        @type  descendant: boolean
+        @param descendant: Does this element descend from the parent, or is it a sibling?
         """
-        super(StyleItem, self).__init__(parent)
+        super(StyleItem, self).__init__(parent, descendant=descendant)
         xpath = self._parent.xpath('sld:'+name, namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}%s' % (SLDNode._nsmap['sld'], name), nsmap=SLDNode._nsmap)
@@ -342,7 +357,7 @@ class StyleItem(SLDNode):
         @rtype: L{CssParameters}
         @return: A pythonic list of L{CssParameter} children.
         """
-        return CssParameters(self._node)
+        return CssParameters(self)
 
     def create_cssparameter(self, name=None, value=None):
         """
@@ -363,7 +378,7 @@ class StyleItem(SLDNode):
             elem.attrib['name'] = name
             elem.text = value
 
-        return CssParameter(self._node, len(self._node)-1)
+        return CssParameter(self, len(self._node)-1)
     
 
 class Fill(StyleItem):
@@ -376,14 +391,16 @@ class Fill(StyleItem):
 
     This class is a property of any L{Symbolizer}.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new Fill node from the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Symbolizer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Fill, self).__init__(parent, 'Fill')
+        super(Fill, self).__init__(parent, 'Fill', descendant=descendant)
 
 
 class Font(StyleItem):
@@ -398,14 +415,16 @@ class Font(StyleItem):
 
     This class is a property of any L{Symbolizer}.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new Font node from the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Symbolizer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Font, self).__init__(parent, 'Font')
+        super(Font, self).__init__(parent, 'Font', descendant=descendant)
 
 
 class Stroke(StyleItem):
@@ -423,14 +442,16 @@ class Stroke(StyleItem):
 
     This class is a property of any L{Symbolizer}.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new Stroke node from the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Symbolizer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Stroke, self).__init__(parent, 'Stroke')
+        super(Stroke, self).__init__(parent, 'Stroke', descendant=descendant)
 
 
 class Symbolizer(SLDNode):
@@ -458,18 +479,20 @@ class Symbolizer(SLDNode):
 
         I{Type}: L{Stroke}
     """
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, descendant=True):
         """
         Create a new Symbolizer node. If the specified node is not found in the
         DOM, the node will be created and attached to the parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Rule}
+        @param parent: The parent class object.
         @type    name: string
         @param   name: The type of symbolizer node. If this parameter ends with
             the character '*', the '*' will get expanded into 'Symbolizer'.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Symbolizer, self).__init__(parent)
+        super(Symbolizer, self).__init__(parent, descendant=descendant)
 
         if name[len(name)-1] == '*':
             name = name[0:-1] + 'Symbolizer'
@@ -535,14 +558,16 @@ class PolygonSymbolizer(Symbolizer):
 
         I{Type}: L{Stroke}
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new PolygonSymbolizer node, as a child of the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Rule}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(PolygonSymbolizer, self).__init__(parent, 'Polygon*')
+        super(PolygonSymbolizer, self).__init__(parent, 'Polygon*', descendant)
 
 
 class LineSymbolizer(Symbolizer):
@@ -557,14 +582,16 @@ class LineSymbolizer(Symbolizer):
 
         I{Type}: L{Stroke}
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new LineSymbolizer node, as a child of the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Rule}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(LineSymbolizer, self).__init__(parent, 'Line*')
+        super(LineSymbolizer, self).__init__(parent, 'Line*', descendant)
 
 
 class TextSymbolizer(Symbolizer):
@@ -579,14 +606,16 @@ class TextSymbolizer(Symbolizer):
     
         I{Type}: L{Fill}
     """
-    def __init__(self, parent): 
+    def __init__(self, parent, descendant=True): 
         """
         Create a new TextSymbolizer node, as a child of the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Rule}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(TextSymbolizer, self).__init__(parent, 'Text*')
+        super(TextSymbolizer, self).__init__(parent, 'Text*', descendant=descendant)
 
 
 class Mark(Symbolizer):
@@ -620,14 +649,16 @@ class Mark(Symbolizer):
 
         I{Type}: string
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new Mark node, as a child of the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Graphic}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Mark, self).__init__(parent, 'Mark')
+        super(Mark, self).__init__(parent, 'Mark', descendant=descendant)
 
         setattr(self.__class__, 'WellKnownName', SLDNode.makeproperty('sld', name='WellKnownName',
             docstring="The well known name for the mark."))
@@ -662,14 +693,16 @@ class Graphic(SLDNode):
 
         I{Type}: float
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new Graphic node, as a child of the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{PointSymbolizer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Graphic, self).__init__(parent)
+        super(Graphic, self).__init__(parent, descendant=descendant)
         xpath = self._parent.xpath('sld:Graphic', namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}Graphic' % SLDNode._nsmap['sld'], nsmap=SLDNode._nsmap)
@@ -698,14 +731,16 @@ class PointSymbolizer(SLDNode):
 
         I{Type}: L{Graphic}
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new PointSymbolizer node, as a child of the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Rule}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(PointSymbolizer, self).__init__(parent)
+        super(PointSymbolizer, self).__init__(parent, descendant=descendant)
         xpath = self._parent.xpath('sld:PointSymbolizer', namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}PointSymbolizer' % SLDNode._nsmap['sld'], nsmap=SLDNode._nsmap)
@@ -744,17 +779,17 @@ class PropertyCriterion(SLDNode):
 
         I{Type}: string
     """
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, descendant=True):
         """
         Create a new PropertyCriterion node, as a child of the specified parent.
         A PropertyCriterion is not represented in the SLD Spec. This class
         is a generalization of many of the PropertyIs... elements present in
         the OGC Filter spec.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Filter}
+        @param parent: The parent class object.
         """
-        super(PropertyCriterion, self).__init__(parent)
+        super(PropertyCriterion, self).__init__(parent, descendant=descendant)
         xpath = self._parent.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}%s' % (SLDNode._nsmap['ogc'], name), nsmap=SLDNode._nsmap)
@@ -822,14 +857,16 @@ class Filter(SLDNode):
 
         I{Type}: L{PropertyCriterion}
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new Filter node.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{Rule}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Filter, self).__init__(parent)
+        super(Filter, self).__init__(parent, descendant=descendant)
         xpath = self._parent.xpath('ogc:Filter', namespaces=SLDNode._nsmap)
         if len(xpath) == 1:
             self._node = xpath[0]
@@ -852,7 +889,7 @@ class Filter(SLDNode):
         elem.append(copy.copy(self._node[0]))
         elem.append(copy.copy(other._node[0]))
 
-        f = Filter(self._parent)
+        f = Filter(self)
         f._node.append(elem)
 
         return f
@@ -870,7 +907,7 @@ class Filter(SLDNode):
         elem.append(copy.copy(self._node[0]))
         elem.append(copy.copy(other._node[0]))
 
-        f = Filter(self._parent)
+        f = Filter(self)
         f._node.append(elem)
 
         return f
@@ -892,7 +929,7 @@ class Filter(SLDNode):
         if len(xpath) == 0:
             return None
 
-        return PropertyCriterion(self._node, name)
+        return PropertyCriterion(self, name)
 
     def __setattr__(self, name, value):
         """
@@ -969,14 +1006,16 @@ class Rule(SLDNode):
 
         I{Type}: L{PointSymbolizer}
     """
-    def __init__(self, parent, index):
+    def __init__(self, parent, index, descendant=True):
         """
         Create a new Rule node.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{FeatureTypeStyle}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Rule, self).__init__(parent)
+        super(Rule, self).__init__(parent, descendant=descendant)
         self._node = self._parent.xpath('sld:Rule', namespaces=SLDNode._nsmap)[index]
 
         setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
@@ -1045,7 +1084,7 @@ class Rule(SLDNode):
             ftype = 'PropertyIsLike'
 
         if not ftype is None:
-            prop = PropertyCriterion(rfilter._node, ftype)
+            prop = PropertyCriterion(rfilter, ftype)
             prop.PropertyName = propname
             if not value is None:
                 prop.Literal = value
@@ -1074,14 +1113,16 @@ class Rules(SLDNode):
     A collection of L{Rule} nodes. This is a pythonic helper (list of 
     nodes) that does not correspond to a true element in the SLD spec.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new list of Rules from the specified parent node.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{FeatureTypeStyle}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(Rules, self).__init__(parent)
+        super(Rules, self).__init__(parent, descendant=descendant)
         self._node = None
         self._nodes = self._parent.xpath('sld:Rule', namespaces=SLDNode._nsmap)
 
@@ -1091,7 +1132,7 @@ class Rules(SLDNode):
         modified in place.
         """
         for i,rnode in enumerate(self._nodes):
-            rule = Rule(self._parent, i-1)
+            rule = Rule(self, i-1, descendant=False)
             rule.normalize()
 
     def __len__(self):
@@ -1112,7 +1153,7 @@ class Rules(SLDNode):
         @rtype: L{Rule}
         @return: The specific L{Rule} node.
         """
-        rule = Rule(self._parent, key)
+        rule = Rule(self, key, descendant=False)
         return rule
 
     def __setitem__(self, key, value):
@@ -1144,14 +1185,16 @@ class FeatureTypeStyle(SLDNode):
     A FeatureTypeStyle node contains all L{Rule} objects applicable to a 
     specific layer. A FeatureTypeStyle is a child of a L{UserStyle} element.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new FeatureTypeNode node, as a child of the specified parent.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{UserStyle}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(FeatureTypeStyle, self).__init__(parent)
+        super(FeatureTypeStyle, self).__init__(parent, descendant=descendant)
         self._node = self._parent.xpath('sld:FeatureTypeStyle', namespaces=SLDNode._nsmap)[0]
 
     def normalize(self):
@@ -1171,7 +1214,7 @@ class FeatureTypeStyle(SLDNode):
         @rtype: L{sld.Rules}
         @return: A list of all rules applied to this style.
         """
-        return Rules(self._node)
+        return Rules(self)
 
     def create_rule(self, title, symbolizer=None):
         """
@@ -1190,28 +1233,28 @@ class FeatureTypeStyle(SLDNode):
         elem = self._node.makeelement('{%s}Rule' % SLDNode._nsmap['sld'], nsmap=SLDNode._nsmap)
         self._node.append(elem)
 
-        rule = Rule(self._node, len(self._node)-1)
+        rule = Rule(self, len(self._node)-1)
         rule.Title = title
 
         if symbolizer is None:
             symbolizer = PointSymbolizer
 
-        sym = symbolizer(rule._node)
+        sym = symbolizer(rule)
         if symbolizer == PointSymbolizer:
-            gph = Graphic(sym._node)
-            mrk = Mark(gph._node)
+            gph = Graphic(sym)
+            mrk = Mark(gph)
             mrk.WellKnownName = 'square'
-            fill = Fill(mrk._node)
+            fill = Fill(mrk)
             fill.create_cssparameter('fill', '#ff0000')
 
         elif symbolizer == LineSymbolizer:
-            stroke = Stroke(sym._node)
+            stroke = Stroke(sym)
             stroke.create_cssparameter('stroke', '#0000ff')
 
         elif symbolizer == PolygonSymbolizer:
-            fill = Fill(sym._node)
+            fill = Fill(sym)
             fill.create_cssparameter('fill', '#AAAAAA')
-            stroke = Stroke(sym._node)
+            stroke = Stroke(sym)
             stroke.create_cssparameter('stroke', '#000000')
             stroke.create_cssparameter('stroke-width', '1')
             
@@ -1240,14 +1283,16 @@ class UserStyle(SLDNode):
 
         I{Type}: L{FeatureTypeStyle}
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new UserStyle node.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{NamedLayer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(UserStyle, self).__init__(parent)
+        super(UserStyle, self).__init__(parent, descendant=descendant)
         self._node = self._parent.xpath('sld:UserStyle', namespaces=SLDNode._nsmap)[0]
 
         setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
@@ -1292,14 +1337,16 @@ class NamedLayer(SLDNode):
 
         I{Type}: L{UserStyle}
     """
-    def __init__(self, parent):
+    def __init__(self, parent, descendant=True):
         """
         Create a new NamedLayer node.
 
-        @type  parent: etree.Element
-        @param parent: The parent node.
+        @type  parent: L{StyledLayerDescriptor}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
         """
-        super(NamedLayer, self).__init__(parent)
+        super(NamedLayer, self).__init__(parent, descendant=descendant)
         self._node = self._parent.xpath('sld:NamedLayer', namespaces=SLDNode._nsmap)[0]
 
         setattr(self.__class__, 'UserStyle', SLDNode.makeproperty('sld', cls=UserStyle,
