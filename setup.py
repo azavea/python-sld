@@ -26,7 +26,7 @@ def read(fname):
 
 setup(
     name = "python-sld",
-    version = "1.0.0",
+    version = "1.0.1",
     author = "David Zwarg",
     author_email = "dzwarg@azavea.com",
     description = ("A simple python library that enables dynamic SLD creation and manipulation."),

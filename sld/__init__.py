@@ -29,7 +29,7 @@ limitations under the License.
 @contact: dzwarg@azavea.com
 @copyright: 2011, Azavea
 @license: Apache 2.0
-@version: 1.0
+@version: 1.0.1
 @newfield prop: Property, Properties
 """
 from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError, tostring
@@ -295,8 +295,6 @@ class CssParameters(SLDNode):
 
         @type  key: integer
         @param key: The index of the child node.
-        @type  descendant: boolean
-        @param descendant: A flag indicating if this is a descendant node of the parent.
         @rtype: L{CssParameter}
         @return: The specific L{CssParameter} node.
         """
