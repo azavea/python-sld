@@ -60,8 +60,8 @@ class SLDNode(object):
         Create a new SLDNode. It is not necessary to call this directly, because
         all child classes should initialize the SLDNode internally.
 
-        @type  parent: etree.Element
-        @param parent: The parent element of this node.
+        @type  parent: L{SLDNode}
+        @param parent: The parent class object.
         @type  descendant: boolean
         @param descendant: Does this element descend from the parent, or is it a sibling?
         """
