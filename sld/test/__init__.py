@@ -21,7 +21,7 @@ limitations under the License.
 @contact: dzwarg@azavea.com
 @copyright: 2011, Azavea
 @license: Apache 2.0
-@version: 1.0
+@version: 1.0.2
 """
 from sld import *
 import unittest, copy
