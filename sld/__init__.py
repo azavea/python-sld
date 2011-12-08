@@ -29,7 +29,7 @@ limitations under the License.
 @contact: dzwarg@azavea.com
 @copyright: 2011, Azavea
 @license: Apache 2.0
-@version: 1.0.3
+@version: 1.0.5
 @newfield prop: Property, Properties
 """
 from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError, tostring

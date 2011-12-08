@@ -46,7 +46,7 @@ class RunTests(Command):
 
 setup(
     name = "python-sld",
-    version = "1.0.4",
+    version = "1.0.5",
     author = "David Zwarg",
     author_email = "dzwarg@azavea.com",
     description = ("A simple python library that enables dynamic SLD creation and manipulation."),
