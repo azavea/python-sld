@@ -26,14 +26,14 @@ def read(fname):
 
 setup(
     name = "python-sld",
-    version = "1.0.2",
+    version = "1.0.3",
     author = "David Zwarg",
     author_email = "dzwarg@azavea.com",
     description = ("A simple python library that enables dynamic SLD creation and manipulation."),
     license = "Apache 2.0",
     keywords = "ogc sld geo geoserver mapserver osgeo",
     url = "http://github.com/dzwarg/python-sld/",
-    packages = ["sld"],
+    packages = ["sld","sld.test"],
     long_description = read('README.markdown'),
     classifiers=[
         "Development Status :: 4 - Beta",
