@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>sld.SLDNode</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="sld-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/azavea/python-sld/">python-sld</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="sld-module.html">Package&nbsp;sld</a> ::
+        Class&nbsp;SLDNode
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="sld.SLDNode-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class SLDNode</h1><p class="nomargin-top"><span class="codelink"><a href="sld-pysrc.html#SLDNode">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_sld_sldn" name="uml_class_diagram_for_sld_sldn">
+<area shape="rect" id="node39" href="sld.SLDNode-class.html#__init__" title="Create a new SLDNode." alt="" coords="17,39,453,57"/>
+<area shape="rect" id="node39" href="sld.SLDNode-class.html#makeproperty" title="Make a property on an instance of an SLDNode." alt="" coords="17,57,453,76"/>
+<area shape="rect" id="node39" href="sld.SLDNode-class.html#get_or_create_element" title="Attempt to get the only child element from this SLDNode." alt="" coords="17,76,453,95"/>
+<area shape="rect" id="node39" href="sld.SLDNode-class.html#create_element" title="Create an element as a child of this SLDNode." alt="" coords="17,95,453,113"/>
+<area shape="rect" id="node1" href="sld.SLDNode-class.html" title="A base class for all python objects that relate directly to SLD elements." alt="" coords="5,6,464,119"/>
+</map>
+  <img src="uml_class_diagram_for_sld_sldn.gif" alt='' usemap="#uml_class_diagram_for_sld_sldn" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>A base class for all python objects that relate directly to SLD 
+  elements. An SLDNode contains references to the underlying parent node, 
+  underlying element node, and the namespace map.</p>
+  <p>The SLDNode base class also contains utility methods to construct 
+  properties for child SLDNode objects.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.SLDNode-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">descendant</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Create a new SLDNode.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#SLDNode.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="sld.SLDNode-class.html" class="link">SLDNode</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.SLDNode-class.html#get_or_create_element" class="summary-sig-name">get_or_create_element</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ns</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Attempt to get the only child element from this SLDNode.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#SLDNode.get_or_create_element">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="sld.SLDNode-class.html" class="link">SLDNode</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.SLDNode-class.html#create_element" class="summary-sig-name">create_element</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">ns</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Create an element as a child of this SLDNode.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#SLDNode.create_element">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">property attribute</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.SLDNode-class.html#makeproperty" class="summary-sig-name">makeproperty</a>(<span class="summary-sig-arg">ns</span>,
+        <span class="summary-sig-arg">cls</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">name</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">docstring</span>=<span class="summary-sig-default">''</span>,
+        <span class="summary-sig-arg">descendant</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Make a property on an instance of an SLDNode.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#SLDNode.makeproperty">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="sld.SLDNode-class.html#_nsmap" class="summary-name" onclick="show_private();">_nsmap</a> = <code title="{'sld': &quot;http://www.opengis.net/sld&quot;, 'ogc': &quot;http://www.opengis.net/o\
+gc&quot;, 'xlink': &quot;http://www.w3.org/1999/xlink&quot;, 'xsi': &quot;http://www.w3.or\
+g/2001/XMLSchema-instance&quot;}">{'sld': &quot;http://www.opengis.net/sld&quot;, 'ogc': &quot;http://<code class="variable-ellipsis">...</code></code><br />
+      Defined namespaces in SLD documents.
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parent</span>,
+        <span class="sig-arg">descendant</span>=<span class="sig-default">True</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#SLDNode.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a new SLDNode. It is not necessary to call this directly, 
+  because all child classes should initialize the SLDNode internally.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>parent</code></strong> (<a href="sld.SLDNode-class.html" class="link">SLDNode</a>) - The parent class object.</li>
+        <li><strong class="pname"><code>descendant</code></strong> (boolean) - Does this element descend from the parent, or is it a sibling?</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="makeproperty"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">makeproperty</span>(<span class="sig-arg">ns</span>,
+        <span class="sig-arg">cls</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">name</span>=<span class="sig-default">None</span>,
+        <span class="sig-arg">docstring</span>=<span class="sig-default">''</span>,
+        <span class="sig-arg">descendant</span>=<span class="sig-default">True</span>)</span>
+    <br /><em class="fname">Static Method</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#SLDNode.makeproperty">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Make a property on an instance of an SLDNode. If cls is omitted, the 
+  property is assumed to be a text node, with no corresponding class 
+  object. If name is omitted, the property is assumed to be a complex node,
+  with a corresponding class wrapper.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>ns</code></strong> (string) - The namespace of this property's node.</li>
+        <li><strong class="pname"><code>cls</code></strong> (class) - Optional. The class of the child property.</li>
+        <li><strong class="pname"><code>name</code></strong> (string) - Optional. The name of the child property.</li>
+        <li><strong class="pname"><code>docstring</code></strong> (string) - Optional. The docstring to attach to the new property.</li>
+        <li><strong class="pname"><code>descendant</code></strong> (boolean) - Does this element descend from the parent, or is it a sibling?</li>
+    </ul></dd>
+    <dt>Returns: property attribute</dt>
+        <dd>A property attribute for this named property.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_or_create_element"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_or_create_element</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ns</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#SLDNode.get_or_create_element">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Attempt to get the only child element from this SLDNode. If the node 
+  does not exist, create the element, attach it to the DOM, and return the 
+  class object that wraps the node.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>ns</code></strong> (string) - The namespace of the new element.</li>
+        <li><strong class="pname"><code>name</code></strong> (string) - The name of the new element.</li>
+    </ul></dd>
+    <dt>Returns: <a href="sld.SLDNode-class.html" class="link">SLDNode</a></dt>
+        <dd>The wrapped node, in the parent's property class. This will 
+          always be a descendent of SLDNode.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_element"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_element</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">ns</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#SLDNode.create_element">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create an element as a child of this SLDNode.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>ns</code></strong> (string) - The namespace of the new element.</li>
+        <li><strong class="pname"><code>name</code></strong> (string) - The name of the new element.</li>
+    </ul></dd>
+    <dt>Returns: <a href="sld.SLDNode-class.html" class="link">SLDNode</a></dt>
+        <dd>The wrapped node, in the parent's property class. This will 
+          always be a descendent of SLDNode.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="_nsmap"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">_nsmap</h3>
+  <p>Defined namespaces in SLD documents.</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{'sld': &quot;http://www.opengis.net/sld&quot;, 'ogc': &quot;http://www.opengis.net/o<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+gc&quot;, 'xlink': &quot;http://www.w3.org/1999/xlink&quot;, 'xsi': &quot;http://www.w3.or<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+g/2001/XMLSchema-instance&quot;}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="sld-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/azavea/python-sld/">python-sld</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Jan  3 14:45:14 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

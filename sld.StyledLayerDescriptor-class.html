@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>sld.StyledLayerDescriptor</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="sld-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/azavea/python-sld/">python-sld</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="sld-module.html">Package&nbsp;sld</a> ::
+        Class&nbsp;StyledLayerDescriptor
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="sld.StyledLayerDescriptor-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class StyledLayerDescriptor</h1><p class="nomargin-top"><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_sld_styl_2" name="uml_class_diagram_for_sld_styl_2">
+<area shape="rect" id="node46" href="sld.SLDNode-class.html#makeproperty" title="Make a property on an instance of an SLDNode." alt="" coords="17,39,453,57"/>
+<area shape="rect" id="node46" href="sld.SLDNode-class.html#get_or_create_element" title="Attempt to get the only child element from this SLDNode." alt="" coords="17,57,453,76"/>
+<area shape="rect" id="node46" href="sld.SLDNode-class.html#create_element" title="Create an element as a child of this SLDNode." alt="" coords="17,76,453,95"/>
+<area shape="rect" id="node1" href="sld.SLDNode-class.html" title="A base class for all python objects that relate directly to SLD elements." alt="" coords="5,6,464,101"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#__init__" title="Create a new SLD document." alt="" coords="141,153,329,172"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#__del__" title="Destroy the StyledLayerDescriptor object, and clear its cache." alt="" coords="141,172,329,191"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#__deepcopy__" title="Perform a deep copy." alt="" coords="141,191,329,209"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#normalize" title="Normalize this node and all child nodes prior to validation." alt="" coords="141,209,329,228"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#validate" title="Validate the current file against the SLD schema." alt="" coords="141,228,329,247"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#version" title="Get the SLD version." alt="" coords="141,247,329,265"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#xmlns" title="Get the XML Namespace." alt="" coords="141,265,329,284"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#create_namedlayer" title="Create a NamedLayer in this SLD." alt="" coords="141,284,329,303"/>
+<area shape="rect" id="node45" href="sld.StyledLayerDescriptor-class.html#as_sld" title="Serialize this SLD model into a string." alt="" coords="141,303,329,321"/>
+<area shape="rect" id="node2" href="sld.StyledLayerDescriptor-class.html" title="An object representation of an SLD document." alt="" coords="129,121,340,327"/>
+</map>
+  <img src="uml_class_diagram_for_sld_styl_2.gif" alt='' usemap="#uml_class_diagram_for_sld_styl_2" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>An object representation of an SLD document.</p>
+
+<hr />
+<div class="fields">      <p><strong>Property:</strong>
+        NamedLayer
+        <p>The named layer that this styling applies to.</p>
+        <p><i>Type</i>: <a href="sld.NamedLayer-class.html" 
+        class="link">NamedLayer</a></p>
+      </p>
+</div><!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">sld_file</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Create a new SLD document.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__del__"></a><span class="summary-sig-name">__del__</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Destroy the StyledLayerDescriptor object, and clear its cache.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.__del__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#__deepcopy__" class="summary-sig-name">__deepcopy__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">memo</span>)</span><br />
+      Perform a deep copy.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.__deepcopy__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#normalize" class="summary-sig-name">normalize</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Normalize this node and all child nodes prior to validation.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.normalize">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">boolean</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#validate" class="summary-sig-name">validate</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Validate the current file against the SLD schema.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.validate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#version" class="summary-sig-name">version</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the SLD version.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.version">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#xmlns" class="summary-sig-name">xmlns</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Get the XML Namespace.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.xmlns">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="sld.NamedLayer-class.html" class="link">NamedLayer</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#create_namedlayer" class="summary-sig-name">create_namedlayer</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Create a <a href="sld.NamedLayer-class.html" 
+      class="link">NamedLayer</a> in this SLD.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.create_namedlayer">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">string</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.StyledLayerDescriptor-class.html#as_sld" class="summary-sig-name">as_sld</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">pretty_print</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Serialize this SLD model into a string.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.as_sld">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="sld.SLDNode-class.html">SLDNode</a></code></b>:
+      <code><a href="sld.SLDNode-class.html#create_element">create_element</a></code>,
+      <code><a href="sld.SLDNode-class.html#get_or_create_element">get_or_create_element</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="sld.SLDNode-class.html">SLDNode</a></code></b>:
+      <code><a href="sld.SLDNode-class.html#makeproperty">makeproperty</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="_cached_schema"></a><span class="summary-name">_cached_schema</span> = <code title="None">None</code><br />
+      A cached schema document, to prevent multiple requests from 
+      occurring.
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="sld.SLDNode-class.html">SLDNode</a></code></b> (private):
+      <code><a href="sld.SLDNode-class.html#_nsmap" onclick="show_private();">_nsmap</a></code>
+      </p></div>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">sld_file</span>=<span class="sig-default">None</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a new SLD document. If an sld file is provided, this 
+  constructor will fetch the SLD schema from the internet and validate the 
+  file against that schema.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>sld_file</code></strong> (string) - The name of a pre-existing SLD file.</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__deepcopy__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__deepcopy__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">memo</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.__deepcopy__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Perform a deep copy. Instead of copying references to the schema 
+  object, create a new SLD, and deepcopy the SLD node.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="normalize"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">normalize</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.normalize">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Normalize this node and all child nodes prior to validation. The SLD 
+  is modified in place.</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="validate"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">validate</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.validate">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Validate the current file against the SLD schema. This first 
+  normalizes the SLD document, then validates it. Any schema validation 
+  error messages are logged at the INFO level.</p>
+  <dl class="fields">
+    <dt>Returns: boolean</dt>
+        <dd>A flag indicating if the SLD is valid.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="version"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">version</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.version">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the SLD version.</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="xmlns"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">xmlns</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.xmlns">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get the XML Namespace.</p>
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="create_namedlayer"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">create_namedlayer</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.create_namedlayer">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a <a href="sld.NamedLayer-class.html" 
+  class="link">NamedLayer</a> in this SLD.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> (string) - The name of the layer.</li>
+    </ul></dd>
+    <dt>Returns: <a href="sld.NamedLayer-class.html" class="link">NamedLayer</a></dt>
+        <dd>The named layer, attached to this SLD.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="as_sld"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">as_sld</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">pretty_print</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#StyledLayerDescriptor.as_sld">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Serialize this SLD model into a string.</p>
+  <dl class="fields">
+    <dt>Returns: string</dt>
+        <dd>The content of the SLD.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="sld-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/azavea/python-sld/">python-sld</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Jan  3 14:45:14 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

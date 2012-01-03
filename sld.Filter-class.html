@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>sld.Filter</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="sld-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/azavea/python-sld/">python-sld</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="sld-module.html">Package&nbsp;sld</a> ::
+        Class&nbsp;Filter
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="sld.Filter-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Filter</h1><p class="nomargin-top"><span class="codelink"><a href="sld-pysrc.html#Filter">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_sld_filt" name="uml_class_diagram_for_sld_filt">
+<area shape="rect" id="node14" href="sld.SLDNode-class.html#makeproperty" title="Make a property on an instance of an SLDNode." alt="" coords="17,39,453,57"/>
+<area shape="rect" id="node14" href="sld.SLDNode-class.html#get_or_create_element" title="Attempt to get the only child element from this SLDNode." alt="" coords="17,57,453,76"/>
+<area shape="rect" id="node14" href="sld.SLDNode-class.html#create_element" title="Create an element as a child of this SLDNode." alt="" coords="17,76,453,95"/>
+<area shape="rect" id="node1" href="sld.SLDNode-class.html" title="A base class for all python objects that relate directly to SLD elements." alt="" coords="5,6,464,101"/>
+<area shape="rect" id="node13" href="sld.Filter-class.html#__init__" title="Create a new Filter node." alt="" coords="119,153,353,172"/>
+<area shape="rect" id="node13" href="sld.Filter-class.html#__add__" title="Add two filters together to create one AND logical filter." alt="" coords="119,172,353,191"/>
+<area shape="rect" id="node13" href="sld.Filter-class.html#__or__" title="Or two filters together to create on OR logical filter." alt="" coords="119,191,353,209"/>
+<area shape="rect" id="node13" href="sld.Filter-class.html#__getattr__" title="Get a named attribute from this Filter instance." alt="" coords="119,209,353,228"/>
+<area shape="rect" id="node13" href="sld.Filter-class.html#__setattr__" title="Set a named attribute on this Filter instance." alt="" coords="119,228,353,247"/>
+<area shape="rect" id="node13" href="sld.Filter-class.html#__delattr__" title="Delete the property from the Filter." alt="" coords="119,247,353,265"/>
+<area shape="rect" id="node2" href="sld.Filter-class.html" title="A filter object that stores the property comparitors." alt="" coords="107,121,365,271"/>
+</map>
+  <img src="uml_class_diagram_for_sld_filt.gif" alt='' usemap="#uml_class_diagram_for_sld_filt" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>A filter object that stores the property comparitors. A Filter is a 
+  child of a <a href="sld.Rule-class.html" class="link">Rule</a> element. 
+  Filter nodes are pythonic, and have some syntactic sugar that allows the 
+  creation of simple logical combinations.</p>
+  <p>To create an AND logical filter, use the '+' operator:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>rule.Filter = filter1 + filter2</pre>
+  <p>To create an OR logical filter, use the '|' operator:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>rule.Filter = filter1 | filter2</pre>
+  <p>Complex combinations can be created by chaining these operations 
+  together:</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span>rule.Filter = filter1 | (filter2 + filter3)</pre>
+
+<hr />
+<div class="fields">      <strong>Properties:</strong>
+      <ul class="nomargin-top">
+        <li>
+        PropertyIsEqualTo
+        <p>A specification of property (=) equality.</p>
+        <p><i>Type</i>: <a href="sld.PropertyCriterion-class.html" 
+        class="link">PropertyCriterion</a></p>
+        </li>
+        <li>
+        PropertyIsNotEqualTo
+        <p>A specification of property (!=) inequality.</p>
+        <p><i>Type</i>: <a href="sld.PropertyCriterion-class.html" 
+        class="link">PropertyCriterion</a></p>
+        </li>
+        <li>
+        PropertyIsLessThan
+        <p>A specification of property less-than (&lt;) comparison.</p>
+        <p><i>Type</i>: <a href="sld.PropertyCriterion-class.html" 
+        class="link">PropertyCriterion</a></p>
+        </li>
+        <li>
+        PropertyIsLessThanOrEqualTo
+        <p>A specification of property less-than-or-equal-to (&lt;=) 
+        comparison.</p>
+        <p><i>Type</i>: <a href="sld.PropertyCriterion-class.html" 
+        class="link">PropertyCriterion</a></p>
+        </li>
+        <li>
+        PropertyIsGreaterThan
+        <p>A specification of property greater-than (&gt;) comparison,</p>
+        <p><i>Type</i>: <a href="sld.PropertyCriterion-class.html" 
+        class="link">PropertyCriterion</a></p>
+        </li>
+        <li>
+        PropertyIsGreaterThanOrEqualTo
+        <p>A specification of property greater-than-or-equal-to (&gt;=) 
+        comparison.</p>
+        <p><i>Type</i>: <a href="sld.PropertyCriterion-class.html" 
+        class="link">PropertyCriterion</a></p>
+        </li>
+      </ul>
+</div><!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.Filter-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">descendant</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Create a new Filter node.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#Filter.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="sld.Filter-class.html" class="link">Filter</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.Filter-class.html#__add__" class="summary-sig-name">__add__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      Add two filters together to create one AND logical filter.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#Filter.__add__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="sld.Filter-class.html" class="link">Filter</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.Filter-class.html#__or__" class="summary-sig-name">__or__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">other</span>)</span><br />
+      Or two filters together to create on OR logical filter.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#Filter.__or__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type"><a href="sld.PropertyCriterion-class.html" 
+      class="link">PropertyCriterion</a></span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.Filter-class.html#__getattr__" class="summary-sig-name">__getattr__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Get a named attribute from this Filter instance.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#Filter.__getattr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.Filter-class.html#__setattr__" class="summary-sig-name">__setattr__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">value</span>)</span><br />
+      Set a named attribute on this Filter instance.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#Filter.__setattr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="sld.Filter-class.html#__delattr__" class="summary-sig-name">__delattr__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Delete the property from the Filter.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="sld-pysrc.html#Filter.__delattr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="sld.SLDNode-class.html">SLDNode</a></code></b>:
+      <code><a href="sld.SLDNode-class.html#create_element">create_element</a></code>,
+      <code><a href="sld.SLDNode-class.html#get_or_create_element">get_or_create_element</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="sld.SLDNode-class.html">SLDNode</a></code></b>:
+      <code><a href="sld.SLDNode-class.html#makeproperty">makeproperty</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="sld.SLDNode-class.html">SLDNode</a></code></b> (private):
+      <code><a href="sld.SLDNode-class.html#_nsmap" onclick="show_private();">_nsmap</a></code>
+      </p></div>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">parent</span>,
+        <span class="sig-arg">descendant</span>=<span class="sig-default">True</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#Filter.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Create a new Filter node.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>parent</code></strong> (<a href="sld.Rule-class.html" class="link">Rule</a>) - The parent class object.</li>
+        <li><strong class="pname"><code>descendant</code></strong> (boolean) - A flag indicating if this is a descendant node of the parent.</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__add__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__add__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">other</span>)</span>
+    <br /><em class="fname">(Addition operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#Filter.__add__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Add two filters together to create one AND logical filter.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>other</code></strong> (<a href="sld.Filter-class.html" class="link">Filter</a>) - A filter to AND with this one.</li>
+    </ul></dd>
+    <dt>Returns: <a href="sld.Filter-class.html" class="link">Filter</a></dt>
+        <dd>A new filter with an ogc:And element as its child.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__or__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__or__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">other</span>)</span>
+    <br /><em class="fname">(Or operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#Filter.__or__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Or two filters together to create on OR logical filter.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>other</code></strong> (<a href="sld.Filter-class.html" class="link">Filter</a>) - A filter to OR with this one.</li>
+    </ul></dd>
+    <dt>Returns: <a href="sld.Filter-class.html" class="link">Filter</a></dt>
+        <dd>A new filter with an ogc:Or element as its child.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__getattr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__getattr__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+    <br /><em class="fname">(Qualification operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#Filter.__getattr__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get a named attribute from this Filter instance. This method allows 
+  properties with the prefix of 'PropertyIs' to be set, and raises an 
+  AttributeError for all other property names.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> (string) - The name of the property.</li>
+    </ul></dd>
+    <dt>Returns: <a href="sld.PropertyCriterion-class.html" 
+      class="link">PropertyCriterion</a></dt>
+        <dd>The property comparitor.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__setattr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__setattr__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">value</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#Filter.__setattr__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Set a named attribute on this Filter instance. If the property name 
+  begins with 'PropertyIs', the node value will be appended to the 
+  filter.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> (string) - The name of the property.</li>
+        <li><strong class="pname"><code>value</code></strong> (<a href="sld.PropertyCriterion-class.html" 
+          class="link">PropertyCriterion</a>) - The new property comparitor.</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__setattr__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__delattr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__delattr__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="sld-pysrc.html#Filter.__delattr__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Delete the property from the Filter. This removes the child node of 
+  this name from the Filter.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> (string) - The name of the property.</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__delattr__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="sld-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/azavea/python-sld/">python-sld</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Jan  3 14:45:13 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
