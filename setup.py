@@ -46,13 +46,14 @@ class RunTests(Command):
 
 setup(
     name = "python-sld",
-    version = "1.0.5",
+    version = "1.0.6",
     author = "David Zwarg",
     author_email = "dzwarg@azavea.com",
     description = ("A simple python library that enables dynamic SLD creation and manipulation."),
     license = "Apache 2.0",
     keywords = "ogc sld geo geoserver mapserver osgeo",
-    url = "http://github.com/dzwarg/python-sld/",
+    url = "http://github.com/azavea/python-sld/",
+    requires = ["lxml"],
     packages = ["sld","sld.test"],
     package_data = {"sld.test": ["style.sld"]},
     long_description = read('README.markdown'),
