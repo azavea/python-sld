@@ -109,5 +109,5 @@ Support
 =======
 
 If you have any problems or questions, please visit the python-sld project on
-github: https://github.com/dzwarg/python-sld/
+github: https://github.com/azavea/python-sld/
 
