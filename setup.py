@@ -54,7 +54,6 @@ setup(
     keywords = "ogc sld geo geoserver mapserver osgeo",
     url = "http://github.com/azavea/python-sld/",
     requires = ["lxml"],
-    setup_requires = ["lxml"],
     packages = ["sld","sld.test"],
     package_data = {"sld.test": ["style.sld"]},
     long_description = read('README.markdown'),
