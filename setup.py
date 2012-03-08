@@ -56,7 +56,7 @@ setup(
     requires = ["lxml"],
     packages = ["sld","sld.test"],
     package_data = {"sld.test": ["style.sld"]},
-    long_description = read('README.markdown'),
+    long_description = read('README'),
     cmdclass = { 'test': RunTests },
     classifiers=[
         "Development Status :: 4 - Beta",
