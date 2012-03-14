@@ -46,7 +46,7 @@ class RunTests(Command):
 
 setup(
     name = "python-sld",
-    version = "1.0.7",
+    version = "1.0.8",
     author = "David Zwarg",
     author_email = "dzwarg@azavea.com",
     description = ("A simple python library that enables dynamic SLD creation and manipulation."),
@@ -56,7 +56,7 @@ setup(
     requires = ["lxml"],
     packages = ["sld","sld.test"],
     package_data = {"sld.test": ["style.sld"]},
-    long_description = read('README'),
+    long_description = read('README.markdown'),
     cmdclass = { 'test': RunTests },
     classifiers=[
         "Development Status :: 4 - Beta",
