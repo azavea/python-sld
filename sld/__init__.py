@@ -1028,6 +1028,10 @@ class Rule(SLDNode):
             docstring="The optional text symbolizer for this rule."))
         setattr(self.__class__, 'PointSymbolizer', SLDNode.makeproperty('sld', cls=PointSymbolizer,
             docstring="The optional point symbolizer for this rule."))
+        setattr(self.__class__, 'MinScaleDenominator', SLDNode.makeproperty('sld', name='MinScaleDenominator',
+            docstring="The minimum scale denominator for this rule."))
+        setattr(self.__class__, 'MaxScaleDenominator', SLDNode.makeproperty('sld', name='MaxScaleDenominator',
+            docstring="The maximum scale denominator for this rule."))              
 
     def normalize(self):
         """
@@ -1214,7 +1218,7 @@ class FeatureTypeStyle(SLDNode):
         """
         return Rules(self)
 
-    def create_rule(self, title, symbolizer=None):
+    def create_rule(self, title, symbolizer=None, MinScaleDenominator=None, MaxScaleDenominator=None):
         """
         Create a L{Rule} object on this style. A rule requires a title and 
         symbolizer. If no symbolizer is specified, a PointSymbolizer will be
@@ -1233,6 +1237,11 @@ class FeatureTypeStyle(SLDNode):
 
         rule = Rule(self, len(self._node)-1)
         rule.Title = title
+        
+        if MinScaleDenominator != None:
+            rule.MinScaleDenominator = MinScaleDenominator
+        if MaxScaleDenominator != None:
+            rule.MaxScaleDenominator = MaxScaleDenominator
 
         if symbolizer is None:
             symbolizer = PointSymbolizer
