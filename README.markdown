@@ -94,6 +94,8 @@ specification. The current implementation supports the following SLD elements:
   - ogc:PropertyIsLike
   - ogc:PropertyName
   - ogc:Literal
+  - MinScaleDenominator
+  - MaxScaleDenominator
   - PointSymbolizer
   - LineSymbolizer
   - PolygonSymbolizer
