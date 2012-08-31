@@ -11,7 +11,7 @@ at U{http://www.opengeospatial.org/standards/sld}
 
 License
 =======
-Copyright 2011 David Zwarg <U{dzwarg@azavea.com}>
+Copyright 2011-2012 David Zwarg <U{dzwarg@azavea.com}>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ limitations under the License.
 
 @author: David Zwarg
 @contact: dzwarg@azavea.com
-@copyright: 2011, Azavea
+@copyright: 2011-2012, Azavea
 @license: Apache 2.0
-@version: 1.0.8
+@version: 1.0.9
 @newfield prop: Property, Properties
 """
 from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError, tostring
@@ -1382,7 +1382,7 @@ class StyledLayerDescriptor(SLDNode):
     """
 
     _cached_schema = None
-    """A cached schema document, to prevent multiple requests from occurring."""
+    """A cached schema document, to prevent repeated web requests for the schema document."""
 
     def __init__(self, sld_file=None):
         """
@@ -1399,13 +1399,27 @@ class StyledLayerDescriptor(SLDNode):
             logging.debug('Storing new schema into cache.')
 
             localschema = NamedTemporaryFile(delete=False)
-            schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
-            resp = urllib2.urlopen(schema_url)
-            localschema.write(resp.read())
-            resp.close()
+            
+            localschema_backup_path = './StyledLayerDescriptor-backup.xsd'
+            try:
+                logging.debug('Cache hit for backup schema document.')
+                localschema_backup = open(localschema_backup_path, 'r')
+            except IOError:
+                logging.debug('Cache miss for backup schema document.')
+                localschema_backup = open(localschema_backup_path, 'w')
+            
+                schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
+                resp = urllib2.urlopen(schema_url)
+                localschema_backup.write(resp.read())
+                resp.close()
+                localschema_backup.close()
+                localschema_backup = open(localschema_backup_path, 'r')
+            
+            localschema.write(localschema_backup.read())
             localschema.seek(0)
+            localschema_backup.close()
 
-            theschema = parse(localschema)
+            self._schemadoc = parse(localschema)
             localschema.close()
 
             StyledLayerDescriptor._cached_schema = localschema.name
@@ -1413,18 +1427,17 @@ class StyledLayerDescriptor(SLDNode):
             logging.debug('Fetching schema from cache.')
 
             localschema = open(StyledLayerDescriptor._cached_schema, 'r')
-            theschema = parse(localschema)
+            self._schemadoc = parse(localschema)
             localschema.close()
-
-        self._schema = XMLSchema(theschema)
 
         if not sld_file is None:
             self._node = parse(sld_file)
-
+            self._schema = XMLSchema(self._schemadoc)
             if not self._schema.validate(self._node):
                 logging.warn('SLD File "%s" does not validate against the SLD schema.', sld_file)
         else:
             self._node = Element("{%s}StyledLayerDescriptor" % SLDNode._nsmap['sld'], version="1.0.0", nsmap=SLDNode._nsmap)
+            self._schema = None
 
         setattr(self.__class__, 'NamedLayer', SLDNode.makeproperty('sld', cls=NamedLayer,
             docstring="The named layer of the SLD."))
@@ -1469,9 +1482,12 @@ class StyledLayerDescriptor(SLDNode):
         """
         self.normalize()
 
-        if self._node is None or self._schema is None:
-            logging.debug('The node or schema is empty, and cannot be validated.')
+        if self._node is None:
+            logging.debug('The node is empty, and cannot be validated.')
             return False
+
+        if self._schema is None:
+            self._schema = XMLSchema(self._schemadoc)
 
         is_valid = self._schema.validate(self._node)
 
