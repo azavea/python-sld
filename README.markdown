@@ -27,12 +27,12 @@ Usage
 Using python-sld to create SLD documents is as easy as instantiating a 
 StyledLayerDescriptor class object.
 
-    import sld
+    from sld import StyledLayerDescriptor
     mysld = StyledLayerDescriptor()
 
 You may also read an existing SLD document in by passing it as a parameter:
 
-    import sld
+    from sld import StyledLayerDescriptor
     mysld = StyledLayerDescriptor('mysld.sld')
 
 Addition of most elements are performed on the parent element, since they are
@@ -46,6 +46,7 @@ CssParameters. They are properties of their parent classes (FeatureTypeStyle
 and Fill/Stroke/Font respectively). They behave as python lists, and you
 can access any of their items using a python list pattern:
 
+    # FIXME: where does the fts var come from?
     rule1 = fts.Rules[0]
     print len(fts.Rules)
     fts.Rules[0] = rule1
@@ -53,6 +54,8 @@ can access any of their items using a python list pattern:
 Filter objects are pythonic, and when combined with the '+' operator, they
 become ogc:And filters.  When combined with the '|' operator, they become
 ogc:Or filters.
+
+    from sld import Filter
 
     filter_1 = Filter(rule)
     # set filter 1 properties
