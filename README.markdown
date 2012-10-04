@@ -46,7 +46,7 @@ CssParameters. They are properties of their parent classes (FeatureTypeStyle
 and Fill/Stroke/Font respectively). They behave as python lists, and you
 can access any of their items using a python list pattern:
 
-    # FIXME: where does the fts var come from?
+    fts = ustyle.create_featuretypestyle()
     rule1 = fts.Rules[0]
     print len(fts.Rules)
     fts.Rules[0] = rule1
