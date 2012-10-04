@@ -3,7 +3,7 @@ Setup script for python-sld.
 
 License
 =======
-Copyright 2011 David Zwarg <dzwarg@azavea.com>
+Copyright 2011-2012 David Zwarg <dzwarg@azavea.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ class RunTests(Command):
 
 setup(
     name = "python-sld",
-    version = "1.0.8",
+    version = "1.0.9",
     author = "David Zwarg",
     author_email = "dzwarg@azavea.com",
     description = ("A simple python library that enables dynamic SLD creation and manipulation."),

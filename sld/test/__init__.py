@@ -3,7 +3,7 @@ Test suite for the StyledLayerDescriptor python library.
 
 License
 =======
-Copyright 2011 David Zwarg <U{dzwarg@azavea.com}>
+Copyright 2011-2012 David Zwarg <U{dzwarg@azavea.com}>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ limitations under the License.
 
 @author: David Zwarg
 @contact: dzwarg@azavea.com
-@copyright: 2011, Azavea
+@copyright: 2011-2012, Azavea
 @license: Apache 2.0
-@version: 1.0.8
+@version: 1.0.9
 """
 from sld import *
 import unittest, copy
