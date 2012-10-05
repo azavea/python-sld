@@ -1,3 +1,4 @@
+#!/usr/bin/python
 """
 Setup script for python-sld.
 
