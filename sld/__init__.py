@@ -1395,42 +1395,43 @@ class StyledLayerDescriptor(SLDNode):
         """
         super(StyledLayerDescriptor, self).__init__(None)
 
-        if StyledLayerDescriptor._cached_schema is None:
-            logging.debug('Storing new schema into cache.')
-
-            localschema = NamedTemporaryFile(delete=False)
-            
-            localschema_backup_path = './StyledLayerDescriptor-backup.xsd'
-            try:
-                logging.debug('Cache hit for backup schema document.')
-                localschema_backup = open(localschema_backup_path, 'r')
-            except IOError:
-                logging.debug('Cache miss for backup schema document.')
-                localschema_backup = open(localschema_backup_path, 'w')
-            
-                schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
-                resp = urllib2.urlopen(schema_url)
-                localschema_backup.write(resp.read())
-                resp.close()
+        if sld_file is not None:
+    
+            if StyledLayerDescriptor._cached_schema is None:
+                logging.debug('Storing new schema into cache.')
+    
+                localschema = NamedTemporaryFile(delete=False)
+                
+                localschema_backup_path = './StyledLayerDescriptor-backup.xsd'
+                try:
+                    logging.debug('Cache hit for backup schema document.')
+                    localschema_backup = open(localschema_backup_path, 'r')
+                except IOError:
+                    logging.debug('Cache miss for backup schema document.')
+                    localschema_backup = open(localschema_backup_path, 'w')
+                
+                    schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
+                    resp = urllib2.urlopen(schema_url)
+                    localschema_backup.write(resp.read())
+                    resp.close()
+                    localschema_backup.close()
+                    localschema_backup = open(localschema_backup_path, 'r')
+                
+                localschema.write(localschema_backup.read())
+                localschema.seek(0)
                 localschema_backup.close()
-                localschema_backup = open(localschema_backup_path, 'r')
-            
-            localschema.write(localschema_backup.read())
-            localschema.seek(0)
-            localschema_backup.close()
+    
+                self._schemadoc = parse(localschema)
+                localschema.close()
+    
+                StyledLayerDescriptor._cached_schema = localschema.name
+            else:
+                logging.debug('Fetching schema from cache.')
+    
+                localschema = open(StyledLayerDescriptor._cached_schema, 'r')
+                self._schemadoc = parse(localschema)
+                localschema.close()
 
-            self._schemadoc = parse(localschema)
-            localschema.close()
-
-            StyledLayerDescriptor._cached_schema = localschema.name
-        else:
-            logging.debug('Fetching schema from cache.')
-
-            localschema = open(StyledLayerDescriptor._cached_schema, 'r')
-            self._schemadoc = parse(localschema)
-            localschema.close()
-
-        if not sld_file is None:
             self._node = parse(sld_file)
             self._schema = XMLSchema(self._schemadoc)
             if not self._schema.validate(self._node):
