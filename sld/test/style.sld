@@ -31,6 +31,7 @@
               <ogc:Literal>880</ogc:Literal>
             </ogc:PropertyIsGreaterThanOrEqualTo>
           </ogc:Filter>
+          <MaxScaleDenominator>20000</MinScaleDenominator>
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#252525</CssParameter>
@@ -50,7 +51,8 @@
                 <ogc:Literal>345</ogc:Literal>
               </ogc:PropertyIsGreaterThanOrEqualTo>
             </ogc:And>
-          </ogc:Filter>          
+          </ogc:Filter>
+          <MinScaleDenominator>20000</MinScaleDenominator>
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#636363</CssParameter>
@@ -70,7 +72,7 @@
                 <ogc:Literal>130</ogc:Literal>
               </ogc:PropertyIsGreaterThanOrEqualTo>
             </ogc:And>
-          </ogc:Filter>          
+          </ogc:Filter>
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#969696</CssParameter>
@@ -90,7 +92,7 @@
                 <ogc:Literal>35</ogc:Literal>
               </ogc:PropertyIsGreaterThanOrEqualTo>
             </ogc:And>
-          </ogc:Filter>          
+          </ogc:Filter>
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#CCCCCC</CssParameter>
@@ -104,7 +106,7 @@
               <ogc:PropertyName>number</ogc:PropertyName>
               <ogc:Literal>35</ogc:Literal>
             </ogc:PropertyIsLessThan>
-          </ogc:Filter>          
+          </ogc:Filter>
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#F7F7F7</CssParameter>

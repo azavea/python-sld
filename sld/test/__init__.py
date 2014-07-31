@@ -62,7 +62,7 @@ class SLD_Test(unittest.TestCase):
         sld.normalize()
 
         self.assertTrue(sld.validate())
-        
+
 
     def test_constructor2(self):
         """
@@ -142,7 +142,7 @@ class SLD_Test(unittest.TestCase):
         Test the parsing of the UserStyle Title, and proper rendering.
         """
         sld = copy.deepcopy(self._sld0)
-        us = sld.NamedLayer.UserStyle 
+        us = sld.NamedLayer.UserStyle
         expected = 'Population'
         self.assertEqual( us.Title, expected, "UserStyle Title was '%s', not '%s'" % (us.Title, expected,))
 
@@ -171,7 +171,7 @@ class SLD_Test(unittest.TestCase):
         sld.create_namedlayer('test named layer')
         sld.NamedLayer.create_userstyle()
 
-        us = sld.NamedLayer.UserStyle 
+        us = sld.NamedLayer.UserStyle
         self.assertTrue( us.Title is None, "UserStyle Title was not None")
 
         expected = 'Consternation'
@@ -316,7 +316,7 @@ class SLD_Test(unittest.TestCase):
         </Rule>"""
         actual = etree.tostring(rule._node, with_tail=False)
         self.assertEqual( actual, expected, actual )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -339,7 +339,7 @@ class SLD_Test(unittest.TestCase):
         expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>&gt; 999</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer></sld:Rule>"""
         actual = etree.tostring(rule._node, with_tail=False)
         self.assertEqual( actual, expected, actual )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -354,7 +354,7 @@ class SLD_Test(unittest.TestCase):
 
         self.assertEqual( rule.Filter.PropertyIsGreaterThanOrEqualTo.PropertyName, 'number' )
         self.assertEqual( rule.Filter.PropertyIsGreaterThanOrEqualTo.Literal, '880' )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -417,7 +417,7 @@ class SLD_Test(unittest.TestCase):
         self.assertFalse( rfilter.PropertyIsLessThanOrEqualTo is None )
         self.assertEqual( rfilter.PropertyIsLessThanOrEqualTo.PropertyName, 'valueB' )
         self.assertEqual( rfilter.PropertyIsLessThanOrEqualTo.Literal, '5000' )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -465,7 +465,7 @@ class SLD_Test(unittest.TestCase):
         self.assertFalse( rfilter.PropertyIsGreaterThanOrEqualTo is None )
         self.assertEqual( rfilter.PropertyIsGreaterThanOrEqualTo.PropertyName, 'valueD' )
         self.assertEqual( rfilter.PropertyIsGreaterThanOrEqualTo.Literal, '100' )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -489,7 +489,7 @@ class SLD_Test(unittest.TestCase):
         self.assertFalse( rfilter.PropertyIsGreaterThan is None )
         self.assertEqual( rfilter.PropertyIsGreaterThan.PropertyName, 'valueE' )
         self.assertEqual( rfilter.PropertyIsGreaterThan.Literal, '10' )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -513,7 +513,7 @@ class SLD_Test(unittest.TestCase):
         self.assertFalse( rfilter.PropertyIsNotEqualTo is None )
         self.assertEqual( rfilter.PropertyIsNotEqualTo.PropertyName, 'valueF' )
         self.assertEqual( rfilter.PropertyIsNotEqualTo.Literal, '0.01' )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -526,7 +526,7 @@ class SLD_Test(unittest.TestCase):
         userstyle = namedlayer.create_userstyle()
         featuretypestyle = userstyle.create_featuretypestyle()
         rule = featuretypestyle.create_rule('test rule', PointSymbolizer)
-        
+
         filter1 = Filter(rule)
         filter1.PropertyIsGreaterThan = PropertyCriterion(filter1, 'PropertyIsGreaterThan')
         filter1.PropertyIsGreaterThan.PropertyName = 'number'
@@ -542,7 +542,7 @@ class SLD_Test(unittest.TestCase):
         expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThanOrEqualTo><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsLessThanOrEqualTo></ogc:And></ogc:Filter></sld:Rule>"""
         actual = etree.tostring(rule._node, with_tail=False)
         self.assertEqual(actual, expected)
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -555,7 +555,7 @@ class SLD_Test(unittest.TestCase):
         userstyle = namedlayer.create_userstyle()
         featuretypestyle = userstyle.create_featuretypestyle()
         rule = featuretypestyle.create_rule('test rule', PointSymbolizer)
-        
+
         filter1 = Filter(rule)
         filter1.PropertyIsGreaterThan = PropertyCriterion(filter1, 'PropertyIsGreaterThan')
         filter1.PropertyIsGreaterThan.PropertyName = 'number'
@@ -571,7 +571,7 @@ class SLD_Test(unittest.TestCase):
         expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:Or><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan></ogc:Or></ogc:Filter></sld:Rule>"""
         actual = etree.tostring(rule._node, with_tail=False)
         self.assertEqual(actual, expected)
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -584,7 +584,7 @@ class SLD_Test(unittest.TestCase):
         userstyle = namedlayer.create_userstyle()
         featuretypestyle = userstyle.create_featuretypestyle()
         rule = featuretypestyle.create_rule('test rule', PointSymbolizer)
-        
+
         filter1 = Filter(rule)
         filter1.PropertyIsGreaterThan = PropertyCriterion(filter1, 'PropertyIsGreaterThan')
         filter1.PropertyIsGreaterThan.PropertyName = 'number'
@@ -605,7 +605,7 @@ class SLD_Test(unittest.TestCase):
         expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:Or><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan><ogc:PropertyIsEqualTo><ogc:PropertyName>value</ogc:PropertyName><ogc:Literal>yes</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Or></ogc:And></ogc:Filter></sld:Rule>"""
         actual = etree.tostring(rule._node, with_tail=False, pretty_print=False)
         self.assertEqual(actual, expected)
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -635,10 +635,10 @@ class SLD_Test(unittest.TestCase):
         self.assertTrue( symbolizer.Fill is None )
         self.assertTrue( symbolizer.Stroke is None )
         self.assertTrue( symbolizer.Font is None )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
-        
+
     def test_polysymoblizer_fill1(self):
         """
         Test the parsing of a Fill property.
@@ -651,7 +651,7 @@ class SLD_Test(unittest.TestCase):
         del rule.PolygonSymbolizer.Fill
 
         self.assertTrue( rule.PolygonSymbolizer.Fill is None )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
 
@@ -669,10 +669,10 @@ class SLD_Test(unittest.TestCase):
 
         self.assertFalse( fill.CssParameters is None )
         self.assertEqual( len(fill.CssParameters), 0 )
-       
+
         sld.normalize()
         self.assertTrue(sld.validate())
-        
+
     def test_fill_cssparameter1(self):
         """
         Test the parsing of the CssParameter property.
@@ -703,9 +703,58 @@ class SLD_Test(unittest.TestCase):
         self.assertEqual( len(fill.CssParameters), 1 )
         self.assertEqual( fill.CssParameters[0].Name, 'fill' )
         self.assertEqual( fill.CssParameters[0].Value, '#ffffff' )
-        
+
         sld.normalize()
         self.assertTrue(sld.validate())
+
+    def test_rule_scale_denominators(self):
+        """
+        Test the parsing of the MaxScaleDenominator & MinScaleDenominator properties.
+        """
+        sld = copy.deepcopy(self._sld0)
+        rule = sld.NamedLayer.UserStyle.FeatureTypeStyle.Rules[0]
+
+        self.assertTrue( rule.MinScaleDenominator is None )
+        self.assertFalse( rule.MaxScaleDenominator is None )
+
+        expected = '20000'
+        self.assertEqual( rule.MaxScaleDenominator , expected, "MaxScaleDominator was '%s', not '%s'" % (rule.MaxScaleDenominator, expected,))
+        expected = '15000'
+        rule.MaxScaleDenominator = expected
+        self.assertEqual( rule.MaxScaleDenominator, expected, "MaxScaleDominator was '%s', not '%s'" % (rule.MaxScaleDenominator, expected,))
+
+        del rule.MaxScaleDenominator
+        self.assertTrue( rule.MaxScaleDenominator is None )
+
+        expected = '15000'
+        rule.MinScaleDenominator = expected
+        self.assertEqual( rule.MinScaleDenominator, expected, "MinScaleDenominator was '%s', not '%s'" % (rule.MinScaleDenominator, expected,))
+
+        sld.normalize()
+        self.assertTrue(sld.validate())
+
+    def test_scale_denominators(self):
+        """
+        Test the construction of the MaxScaleDenominator & MinScaleDenominator properties.
+        """
+        sld = copy.deepcopy(self._sld1)
+        namedlayer = sld.create_namedlayer('test named layer')
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+
+        rule1 = featuretypestyle.create_rule('test rule 1', PointSymbolizer)
+        self.assertTrue( rule1.MinScaleDenominator is None )
+        self.assertTrue( rule1.MaxScaleDenominator is None )
+
+        rule2 = featuretypestyle.create_rule('test rule 2', PointSymbolizer, '10000', '20000')
+        self.assertFalse( rule2.MinScaleDenominator is None )
+        self.assertFalse( rule2.MaxScaleDenominator is None )
+        self.assertEqual( rule2.MinScaleDenominator, '10000' )
+        self.assertEqual( rule2.MaxScaleDenominator, '20000' )
+
+        sld.normalize()
+        self.assertTrue(sld.validate())
+
 
 if __name__ == '__main__':
     unittest.main()
