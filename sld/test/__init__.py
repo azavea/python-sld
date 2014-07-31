@@ -308,6 +308,7 @@ class SLD_Test(unittest.TestCase):
               <ogc:Literal>880</ogc:Literal>
             </ogc:PropertyIsGreaterThanOrEqualTo>
           </ogc:Filter>
+          <MaxScaleDenominator>20000</MaxScaleDenominator>
           <PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#252525</CssParameter>
