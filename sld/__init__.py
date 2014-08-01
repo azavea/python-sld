@@ -11,7 +11,7 @@ at U{http://www.opengeospatial.org/standards/sld}
 
 License
 =======
-Copyright 2011-2012 David Zwarg <U{dzwarg@azavea.com}>
+Copyright 2011-2014 David Zwarg <U{david.a@zwarg.com}>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,16 +26,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 @author: David Zwarg
-@contact: dzwarg@azavea.com
-@copyright: 2011-2012, Azavea
+@contact: david.a@zwarg.com
+@copyright: 2011-2014, Azavea
 @license: Apache 2.0
-@version: 1.0.9
+@version: 1.0.10
 @newfield prop: Property, Properties
 """
-from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError, tostring
-import urllib2
+from lxml.etree import parse, Element, XMLSchema, tostring
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
 from tempfile import NamedTemporaryFile
-import os, copy, logging
+import os
+import copy
+import logging
+
 
 class SLDNode(object):
     """
@@ -48,10 +54,10 @@ class SLDNode(object):
     """
 
     _nsmap = {
-        'sld':"http://www.opengis.net/sld",
-        'ogc':"http://www.opengis.net/ogc",
-        'xlink':"http://www.w3.org/1999/xlink",
-        'xsi':"http://www.w3.org/2001/XMLSchema-instance"
+        'sld': "http://www.opengis.net/sld",
+        'ogc': "http://www.opengis.net/ogc",
+        'xlink': "http://www.w3.org/1999/xlink",
+        'xsi': "http://www.w3.org/2001/XMLSchema-instance"
     }
     """Defined namespaces in SLD documents."""
 
@@ -152,7 +158,6 @@ class SLDNode(object):
                 self._node.remove(xpath[0])
 
         return property(get_property, set_property, del_property, docstring)
-
 
     def get_or_create_element(self, ns, name):
         """
@@ -340,7 +345,7 @@ class StyleItem(SLDNode):
         @param descendant: Does this element descend from the parent, or is it a sibling?
         """
         super(StyleItem, self).__init__(parent, descendant=descendant)
-        xpath = self._parent.xpath('sld:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._parent.xpath('sld:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}%s' % (SLDNode._nsmap['sld'], name), nsmap=SLDNode._nsmap)
             self._parent.append(self._node)
@@ -376,7 +381,7 @@ class StyleItem(SLDNode):
             elem.attrib['name'] = name
             elem.text = value
 
-        return CssParameter(self, len(self._node)-1)
+        return CssParameter(self, len(self._node) - 1)
 
 
 class Fill(StyleItem):
@@ -492,7 +497,7 @@ class Symbolizer(SLDNode):
         """
         super(Symbolizer, self).__init__(parent, descendant=descendant)
 
-        if name[len(name)-1] == '*':
+        if name[len(name) - 1] == '*':
             name = name[0:-1] + 'Symbolizer'
 
         xpath = self._parent.xpath('sld:%s' % name, namespaces=SLDNode._nsmap)
@@ -503,11 +508,11 @@ class Symbolizer(SLDNode):
             self._node = xpath[0]
 
         setattr(self.__class__, 'Fill', SLDNode.makeproperty('sld', cls=Fill,
-            docstring="The parameters for describing the fill styling."))
+                docstring="The parameters for describing the fill styling."))
         setattr(self.__class__, 'Font', SLDNode.makeproperty('sld', cls=Font,
-            docstring="The parameters for describing the font styling."))
+                docstring="The parameters for describing the font styling."))
         setattr(self.__class__, 'Stroke', SLDNode.makeproperty('sld', cls=Stroke,
-            docstring="The parameters for describing the stroke styling."))
+                docstring="The parameters for describing the stroke styling."))
 
     def create_fill(self):
         """
@@ -659,7 +664,7 @@ class Mark(Symbolizer):
         super(Mark, self).__init__(parent, 'Mark', descendant=descendant)
 
         setattr(self.__class__, 'WellKnownName', SLDNode.makeproperty('sld', name='WellKnownName',
-            docstring="The well known name for the mark."))
+                docstring="The well known name for the mark."))
 
 
 class Graphic(SLDNode):
@@ -709,13 +714,13 @@ class Graphic(SLDNode):
             self._node = xpath[0]
 
         setattr(self.__class__, 'Mark', SLDNode.makeproperty('sld', cls=Mark,
-            docstring="The graphic's mark styling."))
+                docstring="The graphic's mark styling."))
         setattr(self.__class__, 'Opacity', SLDNode.makeproperty('sld', name='Opacity',
-            docstring="The opacity of the graphic."))
+                docstring="The opacity of the graphic."))
         setattr(self.__class__, 'Size', SLDNode.makeproperty('sld', name='Size',
-            docstring="The size of the graphic, in pixels."))
+                docstring="The size of the graphic, in pixels."))
         setattr(self.__class__, 'Rotation', SLDNode.makeproperty('sld', name='Rotation',
-            docstring="The rotation of the graphic, in degrees clockwise."))
+                docstring="The rotation of the graphic, in degrees clockwise."))
 
 
 class PointSymbolizer(SLDNode):
@@ -747,7 +752,7 @@ class PointSymbolizer(SLDNode):
             self._node = xpath[0]
 
         setattr(self.__class__, 'Graphic', SLDNode.makeproperty('sld', cls=Graphic,
-            docstring="The graphic settings for this point geometry."))
+                docstring="The graphic settings for this point geometry."))
 
 
 class PropertyCriterion(SLDNode):
@@ -788,7 +793,7 @@ class PropertyCriterion(SLDNode):
         @param parent: The parent class object.
         """
         super(PropertyCriterion, self).__init__(parent, descendant=descendant)
-        xpath = self._parent.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._parent.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}%s' % (SLDNode._nsmap['ogc'], name), nsmap=SLDNode._nsmap)
             self._parent.append(self._node)
@@ -796,9 +801,9 @@ class PropertyCriterion(SLDNode):
             self._node = xpath[0]
 
         setattr(self.__class__, 'PropertyName', SLDNode.makeproperty('ogc', name='PropertyName',
-            docstring="The name of the property to compare."))
+                docstring="The name of the property to compare."))
         setattr(self.__class__, 'Literal', SLDNode.makeproperty('ogc', name='Literal',
-            docstring="The literal value of the property to compare against."))
+                docstring="The literal value of the property to compare against."))
 
 
 class Filter(SLDNode):
@@ -871,7 +876,6 @@ class Filter(SLDNode):
         else:
             self._node = self._parent.makeelement('{%s}Filter' % SLDNode._nsmap['ogc'], nsmap=SLDNode._nsmap)
 
-
     def __add__(self, other):
         """
         Add two filters together to create one AND logical filter.
@@ -923,7 +927,7 @@ class Filter(SLDNode):
         """
         if not name.startswith('PropertyIs'):
             raise AttributeError('Property name must be one of: PropertyIsEqualTo, PropertyIsNotEqualTo, PropertyIsLessThan, PropertyIsLessThanOrEqualTo, PropertyIsGreaterThan, PropertyIsGreaterThanOrEqualTo, PropertyIsLike.')
-        xpath = self._node.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._node.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) == 0:
             return None
 
@@ -943,7 +947,7 @@ class Filter(SLDNode):
             object.__setattr__(self, name, value)
             return
 
-        xpath = self._node.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._node.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) > 0:
             xpath[0] = value
         else:
@@ -958,7 +962,7 @@ class Filter(SLDNode):
         @type  name: string
         @param name: The name of the property.
         """
-        xpath = self._node.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._node.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) > 0:
             self._node.remove(xpath[0])
 
@@ -1017,21 +1021,21 @@ class Rule(SLDNode):
         self._node = self._parent.xpath('sld:Rule', namespaces=SLDNode._nsmap)[index]
 
         setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
-            docstring="The title of the Rule."))
+                docstring="The title of the Rule."))
         setattr(self.__class__, 'Filter', SLDNode.makeproperty('ogc', cls=Filter,
-            docstring="The optional filter object, with property comparitors."))
+                docstring="The optional filter object, with property comparitors."))
         setattr(self.__class__, 'PolygonSymbolizer', SLDNode.makeproperty('sld', cls=PolygonSymbolizer,
-            docstring="The optional polygon symbolizer for this rule."))
+                docstring="The optional polygon symbolizer for this rule."))
         setattr(self.__class__, 'LineSymbolizer', SLDNode.makeproperty('sld', cls=LineSymbolizer,
-            docstring="The optional line symbolizer for this rule."))
+                docstring="The optional line symbolizer for this rule."))
         setattr(self.__class__, 'TextSymbolizer', SLDNode.makeproperty('sld', cls=TextSymbolizer,
-            docstring="The optional text symbolizer for this rule."))
+                docstring="The optional text symbolizer for this rule."))
         setattr(self.__class__, 'PointSymbolizer', SLDNode.makeproperty('sld', cls=PointSymbolizer,
-            docstring="The optional point symbolizer for this rule."))
+                docstring="The optional point symbolizer for this rule."))
         setattr(self.__class__, 'MinScaleDenominator', SLDNode.makeproperty('sld', name='MinScaleDenominator',
-            docstring="The minimum scale denominator for this rule."))
+                docstring="The minimum scale denominator for this rule."))
         setattr(self.__class__, 'MaxScaleDenominator', SLDNode.makeproperty('sld', name='MaxScaleDenominator',
-            docstring="The maximum scale denominator for this rule."))
+                docstring="The maximum scale denominator for this rule."))
 
     def normalize(self):
         """
@@ -1039,9 +1043,10 @@ class Rule(SLDNode):
         ogc:Filter node must come before any symbolizer nodes. The SLD
         is modified in place.
         """
-        order = ['sld:Title','ogc:Filter','sld:MinScaleDenominator',
-                'sld:MaxScaleDenominator','sld:PolygonSymbolizer',
-                'sld:LineSymbolizer', 'sld:TextSymbolizer', 'sld:PointSymbolizer']
+        order = [
+            'sld:Title', 'ogc:Filter', 'sld:MinScaleDenominator',
+            'sld:MaxScaleDenominator', 'sld:PolygonSymbolizer',
+            'sld:LineSymbolizer', 'sld:TextSymbolizer', 'sld:PointSymbolizer']
         for item in order:
             xpath = self._node.xpath(item, namespaces=SLDNode._nsmap)
             for xitem in xpath:
@@ -1134,8 +1139,8 @@ class Rules(SLDNode):
         Normalize this node and all rules contained within. The SLD model is
         modified in place.
         """
-        for i,rnode in enumerate(self._nodes):
-            rule = Rule(self, i-1, descendant=False)
+        for i, rnode in enumerate(self._nodes):
+            rule = Rule(self, i - 1, descendant=False)
             rule.normalize()
 
     def __len__(self):
@@ -1236,12 +1241,12 @@ class FeatureTypeStyle(SLDNode):
         elem = self._node.makeelement('{%s}Rule' % SLDNode._nsmap['sld'], nsmap=SLDNode._nsmap)
         self._node.append(elem)
 
-        rule = Rule(self, len(self._node)-1)
+        rule = Rule(self, len(self._node) - 1)
         rule.Title = title
 
-        if MinScaleDenominator != None:
+        if MinScaleDenominator is not None:
             rule.MinScaleDenominator = MinScaleDenominator
-        if MaxScaleDenominator != None:
+        if MaxScaleDenominator is not None:
             rule.MaxScaleDenominator = MaxScaleDenominator
 
         if symbolizer is None:
@@ -1304,11 +1309,11 @@ class UserStyle(SLDNode):
         self._node = self._parent.xpath('sld:UserStyle', namespaces=SLDNode._nsmap)[0]
 
         setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
-            docstring="The title of the UserStyle."))
+                docstring="The title of the UserStyle."))
         setattr(self.__class__, 'Abstract', SLDNode.makeproperty('sld', name='Abstract',
-            docstring="The abstract of the UserStyle."))
+                docstring="The abstract of the UserStyle."))
         setattr(self.__class__, 'FeatureTypeStyle', SLDNode.makeproperty('sld', cls=FeatureTypeStyle,
-            docstring="The feature type style of the UserStyle."))
+                docstring="The feature type style of the UserStyle."))
 
     def normalize(self):
         """
@@ -1358,9 +1363,9 @@ class NamedLayer(SLDNode):
         self._node = self._parent.xpath('sld:NamedLayer', namespaces=SLDNode._nsmap)[0]
 
         setattr(self.__class__, 'UserStyle', SLDNode.makeproperty('sld', cls=UserStyle,
-            docstring="The UserStyle of the NamedLayer."))
+                docstring="The UserStyle of the NamedLayer."))
         setattr(self.__class__, 'Name', SLDNode.makeproperty('sld', name='Name',
-            docstring="The name of the layer."))
+                docstring="The name of the layer."))
 
     def normalize(self):
         """
@@ -1409,26 +1414,27 @@ class StyledLayerDescriptor(SLDNode):
             logging.debug('Storing new schema into cache.')
 
             localschema = NamedTemporaryFile(delete=False)
-            
+
             localschema_backup_path = './StyledLayerDescriptor-backup.xsd'
             try:
                 logging.debug('Cache hit for backup schema document.')
-                localschema_backup = open(localschema_backup_path, 'r')
+                localschema_backup = open(localschema_backup_path, 'rb')
             except IOError:
                 logging.debug('Cache miss for backup schema document.')
-                localschema_backup = open(localschema_backup_path, 'w')
-            
+                localschema_backup = open(localschema_backup_path, 'wb')
+
                 schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
-                resp = urllib2.urlopen(schema_url)
+                resp = urlopen(schema_url)
                 localschema_backup.write(resp.read())
                 resp.close()
                 localschema_backup.close()
-                localschema_backup = open(localschema_backup_path, 'r')
-            
+                localschema_backup = open(localschema_backup_path, 'rb')
+
             localschema.write(localschema_backup.read())
-            localschema.seek(0)
+            localschema.close()
             localschema_backup.close()
 
+            localschema = open(localschema.name, 'rt')
             self._schemadoc = parse(localschema)
             localschema.close()
 
@@ -1436,7 +1442,7 @@ class StyledLayerDescriptor(SLDNode):
         else:
             logging.debug('Fetching schema from cache.')
 
-            localschema = open(StyledLayerDescriptor._cached_schema, 'r')
+            localschema = open(StyledLayerDescriptor._cached_schema, 'rt')
             self._schemadoc = parse(localschema)
             localschema.close()
 
@@ -1450,7 +1456,7 @@ class StyledLayerDescriptor(SLDNode):
             self._schema = None
 
         setattr(self.__class__, 'NamedLayer', SLDNode.makeproperty('sld', cls=NamedLayer,
-            docstring="The named layer of the SLD."))
+                docstring="The named layer of the SLD."))
 
     def __del__(self):
         """
@@ -1471,7 +1477,6 @@ class StyledLayerDescriptor(SLDNode):
         sld._node = copy.deepcopy(self._node)
         return sld
 
-
     def normalize(self):
         """
         Normalize this node and all child nodes prior to validation. The SLD
@@ -1479,7 +1484,6 @@ class StyledLayerDescriptor(SLDNode):
         """
         if not self.NamedLayer is None:
             self.NamedLayer.normalize()
-
 
     def validate(self):
         """
@@ -1505,7 +1509,6 @@ class StyledLayerDescriptor(SLDNode):
             logging.info('Line:%d, Column:%d -- %s', msg.line, msg.column, msg.message)
 
         return is_valid
-
 
     @property
     def version(self):

@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 Setup script for python-sld.
 
 License
 =======
-Copyright 2011-2012 David Zwarg <dzwarg@azavea.com>
+Copyright 2011-2014 David Zwarg <david.a@zwarg.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import os, subprocess
+import os
+import subprocess
 from setuptools import setup, Command
+
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 class RunTests(Command):
     description = "Run the unittest suite for python-sld."
@@ -46,19 +49,19 @@ class RunTests(Command):
         pass
 
 setup(
-    name = "python-sld",
-    version = "1.0.9",
-    author = "David Zwarg",
-    author_email = "dzwarg@azavea.com",
-    description = ("A simple python library that enables dynamic SLD creation and manipulation."),
-    license = "Apache 2.0",
-    keywords = "ogc sld geo geoserver mapserver osgeo",
-    url = "http://github.com/azavea/python-sld/",
-    requires = ["lxml"],
-    packages = ["sld","sld.test"],
-    package_data = {"sld.test": ["style.sld"]},
-    long_description = read('README.markdown'),
-    cmdclass = { 'test': RunTests },
+    name="python-sld",
+    version="1.0.10",
+    author="David Zwarg",
+    author_email="david.a@zwarg.com",
+    description=("A simple python library that enables dynamic SLD creation and manipulation."),
+    license="Apache 2.0",
+    keywords="ogc sld geo geoserver mapserver osgeo",
+    url="http://github.com/azavea/python-sld/",
+    requires=["lxml"],
+    packages=["sld", "sld.test"],
+    package_data={"sld.test": ["style.sld"]},
+    long_description=read('README.markdown'),
+    cmdclass={'test': RunTests},
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
