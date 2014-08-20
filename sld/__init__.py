@@ -11,7 +11,7 @@ at U{http://www.opengeospatial.org/standards/sld}
 
 License
 =======
-Copyright 2011-2012 David Zwarg <U{dzwarg@azavea.com}>
+Copyright 2011-2014 David Zwarg <U{david.a@zwarg.com}>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,16 +26,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 @author: David Zwarg
-@contact: dzwarg@azavea.com
-@copyright: 2011-2012, Azavea
+@contact: david.a@zwarg.com
+@copyright: 2011-2014, Azavea
 @license: Apache 2.0
-@version: 1.0.9
+@version: 1.0.10
 @newfield prop: Property, Properties
 """
-from lxml.etree import parse, Element, XMLSchema, XMLSyntaxError, tostring
-import urllib2
+from lxml.etree import parse, Element, XMLSchema, tostring
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
 from tempfile import NamedTemporaryFile
-import os, copy, logging
+import os
+import copy
+import logging
+
 
 class SLDNode(object):
     """
@@ -48,10 +54,10 @@ class SLDNode(object):
     """
 
     _nsmap = {
-        'sld':"http://www.opengis.net/sld",
-        'ogc':"http://www.opengis.net/ogc",
-        'xlink':"http://www.w3.org/1999/xlink",
-        'xsi':"http://www.w3.org/2001/XMLSchema-instance"
+        'sld': "http://www.opengis.net/sld",
+        'ogc': "http://www.opengis.net/ogc",
+        'xlink': "http://www.w3.org/1999/xlink",
+        'xsi': "http://www.w3.org/2001/XMLSchema-instance"
     }
     """Defined namespaces in SLD documents."""
 
@@ -72,13 +78,13 @@ class SLDNode(object):
         else:
             self._parent = parent._parent
         self._node = None
-   
+
     @staticmethod
     def makeproperty(ns, cls=None, name=None, docstring='', descendant=True):
         """
-        Make a property on an instance of an SLDNode. If cls is omitted, the 
-        property is assumed to be a text node, with no corresponding class 
-        object. If name is omitted, the property is assumed to be a complex 
+        Make a property on an instance of an SLDNode. If cls is omitted, the
+        property is assumed to be a text node, with no corresponding class
+        object. If name is omitted, the property is assumed to be a complex
         node, with a corresponding class wrapper.
 
         @type         ns: string
@@ -152,7 +158,6 @@ class SLDNode(object):
                 self._node.remove(xpath[0])
 
         return property(get_property, set_property, del_property, docstring)
-
 
     def get_or_create_element(self, ns, name):
         """
@@ -266,7 +271,7 @@ class CssParameter(SLDNode):
 
 class CssParameters(SLDNode):
     """
-    A collection of L{CssParameter} nodes. This is a pythonic helper (list of 
+    A collection of L{CssParameter} nodes. This is a pythonic helper (list of
     nodes) that does not correspond to a true element in the SLD spec.
     """
     def __init__(self, parent):
@@ -290,7 +295,7 @@ class CssParameters(SLDNode):
         return len(self._nodes)
 
     def __getitem__(self, key):
-        """ 
+        """
         Get one of the L{CssParameter} nodes in the list.
 
         @type  key: integer
@@ -313,7 +318,7 @@ class CssParameters(SLDNode):
             self._nodes.replace(self._nodes[key], value._node)
         elif isinstance(value, Element):
             self._nodes.replace(self._nodes[key], value)
-   
+
     def __delitem__(self, key):
         """
         Delete one of the L{CssParameter} nodes from the list.
@@ -340,7 +345,7 @@ class StyleItem(SLDNode):
         @param descendant: Does this element descend from the parent, or is it a sibling?
         """
         super(StyleItem, self).__init__(parent, descendant=descendant)
-        xpath = self._parent.xpath('sld:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._parent.xpath('sld:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}%s' % (SLDNode._nsmap['sld'], name), nsmap=SLDNode._nsmap)
             self._parent.append(self._node)
@@ -376,12 +381,12 @@ class StyleItem(SLDNode):
             elem.attrib['name'] = name
             elem.text = value
 
-        return CssParameter(self, len(self._node)-1)
-    
+        return CssParameter(self, len(self._node) - 1)
+
 
 class Fill(StyleItem):
     """
-    A style specification for fill types. This class contains a 
+    A style specification for fill types. This class contains a
     L{CssParameters} list, which can include:
 
         - fill
@@ -492,7 +497,7 @@ class Symbolizer(SLDNode):
         """
         super(Symbolizer, self).__init__(parent, descendant=descendant)
 
-        if name[len(name)-1] == '*':
+        if name[len(name) - 1] == '*':
             name = name[0:-1] + 'Symbolizer'
 
         xpath = self._parent.xpath('sld:%s' % name, namespaces=SLDNode._nsmap)
@@ -502,12 +507,12 @@ class Symbolizer(SLDNode):
         else:
             self._node = xpath[0]
 
-        setattr(self.__class__, 'Fill', SLDNode.makeproperty('sld', cls=Fill, 
-            docstring="The parameters for describing the fill styling."))
+        setattr(self.__class__, 'Fill', SLDNode.makeproperty('sld', cls=Fill,
+                docstring="The parameters for describing the fill styling."))
         setattr(self.__class__, 'Font', SLDNode.makeproperty('sld', cls=Font,
-            docstring="The parameters for describing the font styling."))
+                docstring="The parameters for describing the font styling."))
         setattr(self.__class__, 'Stroke', SLDNode.makeproperty('sld', cls=Stroke,
-            docstring="The parameters for describing the stroke styling."))
+                docstring="The parameters for describing the stroke styling."))
 
     def create_fill(self):
         """
@@ -543,14 +548,14 @@ class PolygonSymbolizer(Symbolizer):
     L{Rule} element.
 
     @prop: Fill
-    
-        The element that contains the L{CssParameter} nodes for describing the 
+
+        The element that contains the L{CssParameter} nodes for describing the
         polygon fill styles.
 
         I{Type}: L{Fill}
 
     @prop: Stroke
-    
+
         The element that contains the L{CssParameter} nodes for describing the line
         styles.
 
@@ -574,7 +579,7 @@ class LineSymbolizer(Symbolizer):
     L{Rule} element.
 
     @prop: Stroke
-    
+
         The element that contains the L{CssParameter} nodes for describing the line
         styles.
 
@@ -598,13 +603,13 @@ class TextSymbolizer(Symbolizer):
     element.
 
     @prop: Fill
-    
+
         The element that contains the L{CssParameter} nodes for describing the
         character fill styles.
-    
+
         I{Type}: L{Fill}
     """
-    def __init__(self, parent, descendant=True): 
+    def __init__(self, parent, descendant=True):
         """
         Create a new TextSymbolizer node, as a child of the specified parent.
 
@@ -622,21 +627,21 @@ class Mark(Symbolizer):
     element.
 
     @prop: Fill
-    
-        The element that contains the L{CssParameter} nodes for describing the 
+
+        The element that contains the L{CssParameter} nodes for describing the
         fill styles.
 
         I{Type}: L{Fill}
 
     @prop: Stroke
-    
-        The element that contains the L{CssParameter} nodes for describing the 
+
+        The element that contains the L{CssParameter} nodes for describing the
         line styles.
 
         I{Type}: L{Stroke}
 
     @prop: WellKnownName
-    
+
         A string describing the Mark, which may be one of:
             - circle
             - cross
@@ -659,34 +664,34 @@ class Mark(Symbolizer):
         super(Mark, self).__init__(parent, 'Mark', descendant=descendant)
 
         setattr(self.__class__, 'WellKnownName', SLDNode.makeproperty('sld', name='WellKnownName',
-            docstring="The well known name for the mark."))
+                docstring="The well known name for the mark."))
 
 
 class Graphic(SLDNode):
     """
-    A Graphic node represents a graphical mark for representing points. A 
+    A Graphic node represents a graphical mark for representing points. A
     Graphic is a child of a L{PointSymbolizer} element.
 
     @prop: Mark
-    
+
         The element that contains the L{CssParameter} nodes for describing the point styles.
 
         I{Type}: L{Mark}
 
     @prop: Opacity
-    
+
         Bewteen 0 (completely transparent) and 1 (completely opaque)
 
         I{Type}: float
 
     @prop: Size
-    
+
         The size of the graphic, in pixels.
 
         I{Type}: integer
 
     @prop: Rotation
-    
+
         Clockwise degrees of rotation.
 
         I{Type}: float
@@ -709,22 +714,22 @@ class Graphic(SLDNode):
             self._node = xpath[0]
 
         setattr(self.__class__, 'Mark', SLDNode.makeproperty('sld', cls=Mark,
-            docstring="The graphic's mark styling."))
+                docstring="The graphic's mark styling."))
         setattr(self.__class__, 'Opacity', SLDNode.makeproperty('sld', name='Opacity',
-            docstring="The opacity of the graphic."))
+                docstring="The opacity of the graphic."))
         setattr(self.__class__, 'Size', SLDNode.makeproperty('sld', name='Size',
-            docstring="The size of the graphic, in pixels."))
+                docstring="The size of the graphic, in pixels."))
         setattr(self.__class__, 'Rotation', SLDNode.makeproperty('sld', name='Rotation',
-            docstring="The rotation of the graphic, in degrees clockwise."))
+                docstring="The rotation of the graphic, in degrees clockwise."))
 
 
 class PointSymbolizer(SLDNode):
     """
-    A symbolizer for point geometries. A PointSymbolizer is a child of a 
+    A symbolizer for point geometries. A PointSymbolizer is a child of a
     L{Rule} element.
 
     @prop: Graphic
-    
+
         The configuration of the point graphic.
 
         I{Type}: L{Graphic}
@@ -747,14 +752,14 @@ class PointSymbolizer(SLDNode):
             self._node = xpath[0]
 
         setattr(self.__class__, 'Graphic', SLDNode.makeproperty('sld', cls=Graphic,
-            docstring="The graphic settings for this point geometry."))
+                docstring="The graphic settings for this point geometry."))
 
 
 class PropertyCriterion(SLDNode):
     """
-    General property criterion class for all property comparitors. 
+    General property criterion class for all property comparitors.
     A PropertyCriterion is a child of a L{Filter} element.
-    
+
     Valid property comparitors that are represented by this class are:
 
         - PropertyIsNotEqual
@@ -766,13 +771,13 @@ class PropertyCriterion(SLDNode):
         - PropertyIsLike
 
     @prop: PropertyName
-    
+
         The name of the property to use in the comparison.
 
         I{Type}: string
 
     @prop: Literal
-    
+
         The value of the property.
 
         I{Type}: string
@@ -788,7 +793,7 @@ class PropertyCriterion(SLDNode):
         @param parent: The parent class object.
         """
         super(PropertyCriterion, self).__init__(parent, descendant=descendant)
-        xpath = self._parent.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._parent.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) < 1:
             self._node = self._parent.makeelement('{%s}%s' % (SLDNode._nsmap['ogc'], name), nsmap=SLDNode._nsmap)
             self._parent.append(self._node)
@@ -796,15 +801,15 @@ class PropertyCriterion(SLDNode):
             self._node = xpath[0]
 
         setattr(self.__class__, 'PropertyName', SLDNode.makeproperty('ogc', name='PropertyName',
-            docstring="The name of the property to compare."))
+                docstring="The name of the property to compare."))
         setattr(self.__class__, 'Literal', SLDNode.makeproperty('ogc', name='Literal',
-            docstring="The literal value of the property to compare against."))
+                docstring="The literal value of the property to compare against."))
 
 
 class Filter(SLDNode):
     """
-    A filter object that stores the property comparitors. A Filter is a child 
-    of a L{Rule} element. Filter nodes are pythonic, and have some syntactic 
+    A filter object that stores the property comparitors. A Filter is a child
+    of a L{Rule} element. Filter nodes are pythonic, and have some syntactic
     sugar that allows the creation of simple logical combinations.
 
     To create an AND logical filter, use the '+' operator:
@@ -820,37 +825,37 @@ class Filter(SLDNode):
         >>> rule.Filter = filter1 | (filter2 + filter3)
 
     @prop: PropertyIsEqualTo
-    
+
         A specification of property (=) equality.
 
         I{Type}: L{PropertyCriterion}
 
     @prop: PropertyIsNotEqualTo
-    
+
         A specification of property (!=) inequality.
 
         I{Type}: L{PropertyCriterion}
 
     @prop: PropertyIsLessThan
-    
+
         A specification of property less-than (<) comparison.
 
         I{Type}: L{PropertyCriterion}
 
     @prop: PropertyIsLessThanOrEqualTo
-    
+
         A specification of property less-than-or-equal-to (<=) comparison.
 
         I{Type}: L{PropertyCriterion}
 
     @prop: PropertyIsGreaterThan
-    
+
         A specification of property greater-than (>) comparison,
 
         I{Type}: L{PropertyCriterion}
 
     @prop: PropertyIsGreaterThanOrEqualTo
-    
+
         A specification of property greater-than-or-equal-to (>=) comparison.
 
         I{Type}: L{PropertyCriterion}
@@ -870,7 +875,6 @@ class Filter(SLDNode):
             self._node = xpath[0]
         else:
             self._node = self._parent.makeelement('{%s}Filter' % SLDNode._nsmap['ogc'], nsmap=SLDNode._nsmap)
-
 
     def __add__(self, other):
         """
@@ -923,7 +927,7 @@ class Filter(SLDNode):
         """
         if not name.startswith('PropertyIs'):
             raise AttributeError('Property name must be one of: PropertyIsEqualTo, PropertyIsNotEqualTo, PropertyIsLessThan, PropertyIsLessThanOrEqualTo, PropertyIsGreaterThan, PropertyIsGreaterThanOrEqualTo, PropertyIsLike.')
-        xpath = self._node.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._node.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) == 0:
             return None
 
@@ -943,7 +947,7 @@ class Filter(SLDNode):
             object.__setattr__(self, name, value)
             return
 
-        xpath = self._node.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._node.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) > 0:
             xpath[0] = value
         else:
@@ -958,24 +962,24 @@ class Filter(SLDNode):
         @type  name: string
         @param name: The name of the property.
         """
-        xpath = self._node.xpath('ogc:'+name, namespaces=SLDNode._nsmap)
+        xpath = self._node.xpath('ogc:' + name, namespaces=SLDNode._nsmap)
         if len(xpath) > 0:
             self._node.remove(xpath[0])
 
 
 class Rule(SLDNode):
     """
-    A rule object contains a title, an optional L{Filter}, and one or more 
+    A rule object contains a title, an optional L{Filter}, and one or more
     L{Symbolizer}s. A Rule is a child of a L{FeatureTypeStyle}.
 
     @prop: Title
-    
+
         The title of this rule. This is required for a valid SLD.
 
         I{Type}: string
 
     @prop: Filter
-    
+
         Optional. A filter defines logical comparisons against properties.
 
         I{Type}: L{Filter}
@@ -987,19 +991,19 @@ class Rule(SLDNode):
         I{Type}: L{PolygonSymbolizer}
 
     @prop: LineSymbolizer
-    
+
         A symbolizer that defines how lines should be rendered.
 
         I{Type}: L{LineSymbolizer}
 
     @prop: TextSymbolizer
-    
+
         A symbolizer that defines how text should be rendered.
 
         I{Type}: L{TextSymbolizer}
 
     @prop: PointSymbolizer
-    
+
         A symbolizer that defines how points should be rendered.
 
         I{Type}: L{PointSymbolizer}
@@ -1017,17 +1021,21 @@ class Rule(SLDNode):
         self._node = self._parent.xpath('sld:Rule', namespaces=SLDNode._nsmap)[index]
 
         setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
-            docstring="The title of the Rule."))
+                docstring="The title of the Rule."))
         setattr(self.__class__, 'Filter', SLDNode.makeproperty('ogc', cls=Filter,
-            docstring="The optional filter object, with property comparitors."))
+                docstring="The optional filter object, with property comparitors."))
         setattr(self.__class__, 'PolygonSymbolizer', SLDNode.makeproperty('sld', cls=PolygonSymbolizer,
-            docstring="The optional polygon symbolizer for this rule."))
+                docstring="The optional polygon symbolizer for this rule."))
         setattr(self.__class__, 'LineSymbolizer', SLDNode.makeproperty('sld', cls=LineSymbolizer,
-            docstring="The optional line symbolizer for this rule."))
+                docstring="The optional line symbolizer for this rule."))
         setattr(self.__class__, 'TextSymbolizer', SLDNode.makeproperty('sld', cls=TextSymbolizer,
-            docstring="The optional text symbolizer for this rule."))
+                docstring="The optional text symbolizer for this rule."))
         setattr(self.__class__, 'PointSymbolizer', SLDNode.makeproperty('sld', cls=PointSymbolizer,
-            docstring="The optional point symbolizer for this rule."))
+                docstring="The optional point symbolizer for this rule."))
+        setattr(self.__class__, 'MinScaleDenominator', SLDNode.makeproperty('sld', name='MinScaleDenominator',
+                docstring="The minimum scale denominator for this rule."))
+        setattr(self.__class__, 'MaxScaleDenominator', SLDNode.makeproperty('sld', name='MaxScaleDenominator',
+                docstring="The maximum scale denominator for this rule."))
 
     def normalize(self):
         """
@@ -1035,7 +1043,9 @@ class Rule(SLDNode):
         ogc:Filter node must come before any symbolizer nodes. The SLD
         is modified in place.
         """
-        order = ['sld:Title','ogc:Filter','sld:PolygonSymbolizer', 
+        order = [
+            'sld:Title', 'ogc:Filter', 'sld:MinScaleDenominator',
+            'sld:MaxScaleDenominator', 'sld:PolygonSymbolizer',
             'sld:LineSymbolizer', 'sld:TextSymbolizer', 'sld:PointSymbolizer']
         for item in order:
             xpath = self._node.xpath(item, namespaces=SLDNode._nsmap)
@@ -1054,7 +1064,7 @@ class Rule(SLDNode):
         @type    propname: string
         @param   propname: The name of the property to filter.
         @type  comparitor: string
-        @param comparitor: The comparison to perform on the property. One of 
+        @param comparitor: The comparison to perform on the property. One of
             "!=", "<", "<=", "=", ">=", ">", and "%" is required.
         @type       value: string
         @param      value: The value of the property to compare against.
@@ -1095,20 +1105,20 @@ class Rule(SLDNode):
         Create a L{Symbolizer} of the specified type on this rule.
 
         @type  stype: string
-        @param stype: The type of symbolizer. Allowed types are "Point", 
+        @param stype: The type of symbolizer. Allowed types are "Point",
             "Line", "Polygon", or "Text".
         @rtype: L{Symbolizer}
         @return: A newly created symbolizer, attached to this Rule.
         """
         if stype is None:
             return None
-        
+
         return self.create_element('sld', stype + 'Symbolizer')
-        
+
 
 class Rules(SLDNode):
     """
-    A collection of L{Rule} nodes. This is a pythonic helper (list of 
+    A collection of L{Rule} nodes. This is a pythonic helper (list of
     nodes) that does not correspond to a true element in the SLD spec.
     """
     def __init__(self, parent, descendant=True):
@@ -1129,8 +1139,8 @@ class Rules(SLDNode):
         Normalize this node and all rules contained within. The SLD model is
         modified in place.
         """
-        for i,rnode in enumerate(self._nodes):
-            rule = Rule(self, i-1, descendant=False)
+        for i, rnode in enumerate(self._nodes):
+            rule = Rule(self, i - 1, descendant=False)
             rule.normalize()
 
     def __len__(self):
@@ -1143,7 +1153,7 @@ class Rules(SLDNode):
         return len(self._nodes)
 
     def __getitem__(self, key):
-        """ 
+        """
         Get one of the L{Rule} nodes in the list.
 
         @type  key: integer
@@ -1167,7 +1177,7 @@ class Rules(SLDNode):
             self._nodes.replace(self._nodes[key], value._node)
         elif isinstance(value, Element):
             self._nodes.replace(self._nodes[key], value)
-   
+
     def __delitem__(self, key):
         """
         Delete one of the L{Rule} nodes from the list.
@@ -1180,7 +1190,7 @@ class Rules(SLDNode):
 
 class FeatureTypeStyle(SLDNode):
     """
-    A FeatureTypeStyle node contains all L{Rule} objects applicable to a 
+    A FeatureTypeStyle node contains all L{Rule} objects applicable to a
     specific layer. A FeatureTypeStyle is a child of a L{UserStyle} element.
     """
     def __init__(self, parent, descendant=True):
@@ -1197,7 +1207,7 @@ class FeatureTypeStyle(SLDNode):
 
     def normalize(self):
         """
-        Normalize this element and all child L{Rule}s. The SLD model is 
+        Normalize this element and all child L{Rule}s. The SLD model is
         modified in place.
         """
         if not self.Rules is None:
@@ -1206,7 +1216,7 @@ class FeatureTypeStyle(SLDNode):
     @property
     def Rules(self):
         """
-        Get the L{sld.Rules} pythonic list helper for all L{Rule} objects in this 
+        Get the L{sld.Rules} pythonic list helper for all L{Rule} objects in this
         style.
 
         @rtype: L{sld.Rules}
@@ -1214,9 +1224,9 @@ class FeatureTypeStyle(SLDNode):
         """
         return Rules(self)
 
-    def create_rule(self, title, symbolizer=None):
+    def create_rule(self, title, symbolizer=None, MinScaleDenominator=None, MaxScaleDenominator=None):
         """
-        Create a L{Rule} object on this style. A rule requires a title and 
+        Create a L{Rule} object on this style. A rule requires a title and
         symbolizer. If no symbolizer is specified, a PointSymbolizer will be
         assigned to the rule.
 
@@ -1231,8 +1241,13 @@ class FeatureTypeStyle(SLDNode):
         elem = self._node.makeelement('{%s}Rule' % SLDNode._nsmap['sld'], nsmap=SLDNode._nsmap)
         self._node.append(elem)
 
-        rule = Rule(self, len(self._node)-1)
+        rule = Rule(self, len(self._node) - 1)
         rule.Title = title
+
+        if MinScaleDenominator is not None:
+            rule.MinScaleDenominator = MinScaleDenominator
+        if MaxScaleDenominator is not None:
+            rule.MaxScaleDenominator = MaxScaleDenominator
 
         if symbolizer is None:
             symbolizer = PointSymbolizer
@@ -1255,7 +1270,7 @@ class FeatureTypeStyle(SLDNode):
             stroke = Stroke(sym)
             stroke.create_cssparameter('stroke', '#000000')
             stroke.create_cssparameter('stroke-width', '1')
-            
+
         return rule
 
 
@@ -1264,19 +1279,19 @@ class UserStyle(SLDNode):
     A UserStyle object. A UserStyle is a child of a L{StyledLayerDescriptor}.
 
     @prop: Title
-    
+
         The title of the UserStyle.
 
         I{Type}: string
 
     @prop: Abstract
-    
+
         The abstract describing this UserStyle.
 
         I{Type}: string
 
     @prop: FeatureTypeStyle
-    
+
         The styling for the feature type.
 
         I{Type}: L{FeatureTypeStyle}
@@ -1294,11 +1309,11 @@ class UserStyle(SLDNode):
         self._node = self._parent.xpath('sld:UserStyle', namespaces=SLDNode._nsmap)[0]
 
         setattr(self.__class__, 'Title', SLDNode.makeproperty('sld', name='Title',
-            docstring="The title of the UserStyle."))
+                docstring="The title of the UserStyle."))
         setattr(self.__class__, 'Abstract', SLDNode.makeproperty('sld', name='Abstract',
-            docstring="The abstract of the UserStyle."))
+                docstring="The abstract of the UserStyle."))
         setattr(self.__class__, 'FeatureTypeStyle', SLDNode.makeproperty('sld', cls=FeatureTypeStyle,
-            docstring="The feature type style of the UserStyle."))
+                docstring="The feature type style of the UserStyle."))
 
     def normalize(self):
         """
@@ -1324,13 +1339,13 @@ class NamedLayer(SLDNode):
     a L{StyledLayerDescriptor}.
 
     @prop: Name
-    
+
         The name of the UserStyle.
 
         I{Type}: string
 
     @prop: UserStyle
-    
+
         The custom styling for this named layer.
 
         I{Type}: L{UserStyle}
@@ -1348,9 +1363,9 @@ class NamedLayer(SLDNode):
         self._node = self._parent.xpath('sld:NamedLayer', namespaces=SLDNode._nsmap)[0]
 
         setattr(self.__class__, 'UserStyle', SLDNode.makeproperty('sld', cls=UserStyle,
-            docstring="The UserStyle of the NamedLayer."))
+                docstring="The UserStyle of the NamedLayer."))
         setattr(self.__class__, 'Name', SLDNode.makeproperty('sld', name='Name',
-            docstring="The name of the layer."))
+                docstring="The name of the layer."))
 
     def normalize(self):
         """
@@ -1375,7 +1390,7 @@ class StyledLayerDescriptor(SLDNode):
     An object representation of an SLD document.
 
     @prop: NamedLayer
-    
+
         The named layer that this styling applies to.
 
         I{Type}: L{NamedLayer}
@@ -1387,7 +1402,7 @@ class StyledLayerDescriptor(SLDNode):
     def __init__(self, sld_file=None):
         """
         Create a new SLD document. If an sld file is provided, this constructor
-        will fetch the SLD schema from the internet and validate the file 
+        will fetch the SLD schema from the internet and validate the file
         against that schema.
 
         @type  sld_file: string
@@ -1395,10 +1410,8 @@ class StyledLayerDescriptor(SLDNode):
         """
         super(StyledLayerDescriptor, self).__init__(None)
 
-        if sld_file is not None:
-
+        if not sld_file is None:
             self._node = parse(sld_file)
-            #self._schema = XMLSchema(self._schemadoc)
             if not self.validate(self._node):
                 logging.warn('SLD File "%s" does not validate against the SLD schema.', sld_file)
         else:
@@ -1406,7 +1419,7 @@ class StyledLayerDescriptor(SLDNode):
             self._schema = None
 
         setattr(self.__class__, 'NamedLayer', SLDNode.makeproperty('sld', cls=NamedLayer,
-            docstring="The named layer of the SLD."))
+                docstring="The named layer of the SLD."))
 
     def __del__(self):
         """
@@ -1427,7 +1440,6 @@ class StyledLayerDescriptor(SLDNode):
         sld._node = copy.deepcopy(self._node)
         return sld
 
-
     def normalize(self):
         """
         Normalize this node and all child nodes prior to validation. The SLD
@@ -1435,7 +1447,6 @@ class StyledLayerDescriptor(SLDNode):
         """
         if not self.NamedLayer is None:
             self.NamedLayer.normalize()
-
 
     def validate(self):
         """
@@ -1500,7 +1511,6 @@ class StyledLayerDescriptor(SLDNode):
 
         return is_valid
 
-
     @property
     def version(self):
         """
@@ -1518,7 +1528,7 @@ class StyledLayerDescriptor(SLDNode):
     def create_namedlayer(self, name):
         """
         Create a L{NamedLayer} in this SLD.
-        
+
         @type  name: string
         @param name: The name of the layer.
         @rtype: L{NamedLayer}

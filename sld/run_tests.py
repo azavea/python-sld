@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """
 Testing fixture for StyledLayerDescriptor library.
 
 License
 =======
-Copyright 2011-2012 David Zwarg <U{dzwarg@azavea.com}>
+Copyright 2011-2014 David Zwarg <U{david.a@zwarg.com}>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,18 +19,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 @author: David Zwarg
-@contact: dzwarg@azavea.com
-@copyright: 2011-2012, Azavea
+@contact: david.a@zwarg.com
+@copyright: 2011-2014, Azavea
 @license: Apache 2.0
-@version: 1.0.9
+@version: 1.0.10
 """
-import unittest, sys, logging
+import unittest
+import sys
+import logging
 from optparse import OptionParser
 
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option('-v', '--verbose', dest='verbosity',
-        help='Logging verbosity.', action='store_true', default=False)
+                      help='Logging verbosity.', action='store_true', default=False)
 
     (options, args) = parser.parse_args()
 
@@ -38,7 +40,7 @@ if __name__ == "__main__":
     if options.verbosity:
         loglevel = logging.DEBUG
 
-    logging.basicConfig(format='%(message)s',level=loglevel)
+    logging.basicConfig(format='%(message)s', level=loglevel)
 
     sys.path.insert(0, '..')
 

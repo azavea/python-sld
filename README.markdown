@@ -97,6 +97,8 @@ specification. The current implementation supports the following SLD elements:
   - ogc:PropertyIsLike
   - ogc:PropertyName
   - ogc:Literal
+  - MinScaleDenominator
+  - MaxScaleDenominator
   - PointSymbolizer
   - LineSymbolizer
   - PolygonSymbolizer
@@ -113,4 +115,9 @@ Support
 
 If you have any problems or questions, please visit the python-sld project on
 github: https://github.com/azavea/python-sld/
+
+Contributors
+============
+
+@[ewsterrenburg](https://github.com/ewsterrenburg)
 
