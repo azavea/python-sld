@@ -1412,7 +1412,8 @@ class StyledLayerDescriptor(SLDNode):
 
         if not sld_file is None:
             self._node = parse(sld_file)
-            if not self.validate(self._node):
+            self._load_schema()
+            if not self._schema.validate(self._node):
                 logging.warn('SLD File "%s" does not validate against the SLD schema.', sld_file)
         else:
             self._node = Element("{%s}StyledLayerDescriptor" % SLDNode._nsmap['sld'], version="1.0.0", nsmap=SLDNode._nsmap)
@@ -1448,22 +1449,7 @@ class StyledLayerDescriptor(SLDNode):
         if not self.NamedLayer is None:
             self.NamedLayer.normalize()
 
-    def validate(self):
-        """
-        Validate the current file against the SLD schema. This first normalizes
-        the SLD document, then validates it. Any schema validation error messages
-        are logged at the INFO level.
-
-        @rtype: boolean
-        @return: A flag indicating if the SLD is valid.
-        """
-        self.normalize()
-
-        if self._node is None:
-            logging.debug('The node is empty, and cannot be validated.')
-            return False
-
-
+    def _load_schema(self):
         if StyledLayerDescriptor._cached_schema is None:
             logging.debug('Storing new schema into cache.')
 
@@ -1499,10 +1485,26 @@ class StyledLayerDescriptor(SLDNode):
             self._schemadoc = parse(localschema)
             localschema.close()
 
+        self._schema = XMLSchema(self._schemadoc)
 
+        return
 
-        if self._schema is None:
-            self._schema = XMLSchema(self._schemadoc)
+    def validate(self):
+        """
+        Validate the current file against the SLD schema. This first normalizes
+        the SLD document, then validates it. Any schema validation error messages
+        are logged at the INFO level.
+
+        @rtype: boolean
+        @return: A flag indicating if the SLD is valid.
+        """
+        self.normalize()
+
+        if self._node is None:
+            logging.debug('The node is empty, and cannot be validated.')
+            return False
+
+        self._load_schema()
 
         is_valid = self._schema.validate(self._node)
 
