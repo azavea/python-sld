@@ -667,6 +667,288 @@ class Mark(Symbolizer):
                 docstring="The well known name for the mark."))
 
 
+class ColorMapEntry(SLDNode):
+    """
+    Defines a single entry in a L{ColorMap}.
+    """
+
+    def __init__(self, parent, index, *args, **kwargs):
+        """
+        Create a new ColorMapEntry from an existing ColorMap.
+
+        @type parent: L{ColorMap}
+        @param parent: The parent node.
+        @type index: integer
+        @param index: The index of the node in the list of all ColorMapEntry nodes in the parent.
+        """
+
+        super(ColorMapEntry, self).__init__(parent, *args, **kwargs)
+        self._node = self._parent.xpath('sld:ColorMapEntry', namespaces=SLDNode._nsmap)[index]
+
+    def get_color(self):
+        """
+        Get the entry color attribute.
+
+        @rtype: string
+        @return: The value of the 'color' attribute.
+        """
+
+        return self._node.attrib['color']
+
+    def set_color(self, value):
+        """
+        Set the entry color attribute.
+
+        @type value: string
+        @param value: The new value of the 'color' attribute.
+        """
+
+        self._node.attrib['color'] = value
+
+    def get_opacity(self):
+        """
+        Get the entry opacity attribute.
+
+        @rtype: float
+        @return: The value of the 'opacity' attribute (0-1).
+        """
+
+        return float(self._node.attrib['opacity']) if 'opacity' in self._node.attrib else None
+
+    def set_opacity(self, value):
+        """
+        Set the entry opacity attribute.
+
+        @type value: float
+        @param value: The new value of the 'opacity' attribute (0-1).
+        """
+
+        self._node.attrib['opacity'] = str(value)
+
+    def get_quantity(self):
+        """
+        Get the entry quantity attribute.
+
+        @rtype: float
+        @return: The value of the 'quantity' attribute.
+        """
+
+        return float(self._node.attrib['quantity']) if 'quantity' in self._node.attrib else None
+
+    def set_quantity(self, value):
+        """
+        Set the entry quantity attribute.
+
+        @type value: float
+        @param value: The new value of the 'quantity' attribute.
+        """
+
+        self._node.attrib['quantity'] = str(value)
+
+    def get_label(self):
+        """
+        Get the entry label attribute.
+
+        @rtype: string
+        @return: The value of the 'label' attribute.
+        """
+
+        return self._node.attrib.get('label')
+
+    def set_label(self, value):
+        """
+        Set the entry label attribute.
+
+        @type value: string
+        @param value: The new value of the 'label' attribute.
+        """
+
+        self._node.attrib['label'] = value
+
+
+class ColorMapEntries(SLDNode):
+    """
+    A collect of L{ColorMapEntry} nodes. This is a helper class that does not correspond to an actual XML element.
+    """
+
+    def __init__(self, parent, *args, **kwargs):
+        """
+        Create a new list of ColorMapEntry objects from the specified parent node.
+
+        @type parent: L{ColorMap}
+        @param parent: The parent node.
+        """
+
+        super(ColorMapEntries, self).__init__(parent, *args, **kwargs)
+        self._nodes = self._parent.xpath('sld:ColorMapEntry', namespaces=SLDNode._nsmap)
+
+    def __len__(self):
+        """
+        Get the number of L{ColorMapEntry} nodes in this list.
+
+        @rtype: integer
+        @return: The number of :{ColorMapEntry} nodes.
+        """
+
+        return len(self._nodes)
+
+    def __getitem__(self, key):
+        """
+        Get the L{ColorMapEntry} node by index.
+
+        @type key: integer
+        @param key: The index of the child node.
+        @rtype: L{ColorMapEntry}
+        @return: The L{ColorMapEntry} node.
+        """
+
+        return ColorMapEntry(self, key, descendant=False)
+
+    def __setitem__(self, key, value):
+        """
+        Set a L{ColorMapEntry} node by index.
+
+        @type key: integer
+        @param key: The index of the child node.
+        @type value: L{ColorMapEntry}
+        @param value: The new child node.
+        """
+
+        self._nodes.replace(self.nodes[key], value._node)
+
+    def __delitem__(self, key):
+        """
+        Delete a L{ColorMapEntry} by index.
+
+        @type key: integer
+        @param key: The index of the child node.
+        """
+
+        self._nodes.remove(self._nodes[key])
+
+
+class ColorMap(SLDNode):
+    """
+    Defines the color pallet or mapping of pixel values to colors.
+    """
+
+    def __init__(self, parent, *args, **kwargs):
+        """
+        Create a new ColorMap node as a child of the specified parent.
+
+        @type parent: L{RasterSymbolizer}
+        @param parent: The parent node
+        """
+
+        super(ColorMap, self).__init__(parent, *args, **kwargs)
+        self._node = self._parent.xpath('sld:ColorMap', namespaces=SLDNode._nsmap)[0]
+
+    def get_type(self):
+        """
+        Get the color map type.
+
+        @rtype: string
+        @return: The color map type (one of: ramp, intervals, values).
+        """
+
+        return self._node.attrib.get('type', 'ramp')
+
+    def set_type(self, value):
+        """
+        Set the ramp type.
+
+        @type value: string
+        @param value: The new ramp type (one of: ramp, intervals, values).
+        """
+
+        self._node.attrib['type'] = value
+
+    @property
+    def ColorMapEntries(self):
+        """
+        The helper class for L{ColorMapEntry} nodes.
+
+        @rtype: L{ColorMapEntries}
+        @return: A list of all the L{ColorMapEntry} nodes.
+        """
+
+        return ColorMapEntries(self)
+
+    def create_color_map_entry(self, color, opacity=None, quantity=None, label=None):
+        """
+        Create a L{ColorMapEntry} node on this color map.
+
+        @type color: string
+        @param color: The entry color.
+        @type opacity: float
+        @param opacity: The entry opacity (0-1).
+        @type quantity: float
+        @param quantity: The entry quantity (value).
+        @type label: string
+        @param label: The entry label.
+        @rtype: L{ColorMapEntry}
+        @return: A newly created color map entry, attached to this color map.
+        """
+
+        node = self._node.makeelement('{%s}ColorMapEntry' % SLDNode._nsmap, nsmap=SLDNode._nsmap)
+        self._node.append(node)
+
+        entry = ColorMapEntry(self, len(self._node), -1)
+        entry.set_color(color)
+
+        if opacity:
+            entry.set_opacity(opacity)
+        if quantity:
+            entry.set_quantity(quantity)
+        if label:
+            entry.set_label(label)
+
+        return entry
+
+
+class RasterSymbolizer(Symbolizer):
+    """
+    A symbolizer for raster / matrix-coverage data (e.g., satellite images, DEMs).
+
+    @prop: Opacity
+
+        Between 0 (completely transparent) and 1 (completely opaque)
+
+        I{Type}: float
+
+    @prop: ColorMap
+
+        Defines the color pallet or mapping of pixel values to colors.
+
+        I{Type}: L{ColorMap}
+    """
+
+    def __init__(self, parent, *args, **kwargs):
+        """
+        Create a new RasterSymbolizer node.
+
+         @type parent: L{Rule}
+         @param parent: The parent node.
+        """
+
+        super(RasterSymbolizer, self).__init__(parent, 'Raster*', *args, **kwargs)
+
+        setattr(self.__class__, 'Opacity', SLDNode.makeproperty('sld', docstring='The symbolizer opacity.'))
+        setattr(self.__class__, 'ColorMap', SLDNode.makeproperty(
+            'sld', cls=ColorMap, docstring='The symbolizer color map.'
+        ))
+
+    def create_colormap(self):
+        """
+        Create a new L{ColorMap} node on this symbolizer.
+
+        @rtype: L{ColorMap}
+        @return: A new color map node, attached to this symbolizer.
+        """
+
+        return self.create_element('sld', 'ColorMap')
+
+
 class Graphic(SLDNode):
     """
     A Graphic node represents a graphical mark for representing points. A
@@ -1007,6 +1289,12 @@ class Rule(SLDNode):
         A symbolizer that defines how points should be rendered.
 
         I{Type}: L{PointSymbolizer}
+
+    @prop: RasterSymbolizer
+
+        A symbolizer that defines how raster data should be rendered.
+
+        I{Type}: L{RasterSymbolizer}
     """
     def __init__(self, parent, index, descendant=True):
         """
@@ -1032,6 +1320,8 @@ class Rule(SLDNode):
                 docstring="The optional text symbolizer for this rule."))
         setattr(self.__class__, 'PointSymbolizer', SLDNode.makeproperty('sld', cls=PointSymbolizer,
                 docstring="The optional point symbolizer for this rule."))
+        setattr(self.__class__, 'RasterSymbolizer', SLDNode.makeproperty('sld', cls=RasterSymbolizer,
+                docstring="The option raster symbolizer for this rule."))
         setattr(self.__class__, 'MinScaleDenominator', SLDNode.makeproperty('sld', name='MinScaleDenominator',
                 docstring="The minimum scale denominator for this rule."))
         setattr(self.__class__, 'MaxScaleDenominator', SLDNode.makeproperty('sld', name='MaxScaleDenominator',
@@ -1046,7 +1336,8 @@ class Rule(SLDNode):
         order = [
             'sld:Title', 'ogc:Filter', 'sld:MinScaleDenominator',
             'sld:MaxScaleDenominator', 'sld:PolygonSymbolizer',
-            'sld:LineSymbolizer', 'sld:TextSymbolizer', 'sld:PointSymbolizer']
+            'sld:LineSymbolizer', 'sld:TextSymbolizer', 'sld:PointSymbolizer',
+            'sld:RasterSymbolizer']
         for item in order:
             xpath = self._node.xpath(item, namespaces=SLDNode._nsmap)
             for xitem in xpath:

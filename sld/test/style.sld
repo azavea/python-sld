@@ -122,6 +122,15 @@
             </Stroke>
           </LineSymbolizer>
         </Rule>
+        <Rule>
+          <RasterSymbolizer>
+            <ColorMap>
+              <ColorMapEntry color="#FFFFFF" quantity="-9999" label="No Data" opacity="0" />
+              <ColorMapEntry color="#FFFFFF" quantity="0" label="0 mm." opacity="1" />
+              <ColorMapEntry color="#FFB84D" quantity="25" label="25 mm." opacity="1" />
+            </ColorMap>
+          </RasterSymbolizer>
+        </Rule>
       </FeatureTypeStyle>
     </UserStyle>
   </NamedLayer>
