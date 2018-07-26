@@ -501,6 +501,139 @@ class Label(StyleItem):
                 docstring="The name of the fied to be displayed"))
 
 
+class LabelPlacement(StyleItem):
+    """
+    A style specification for LabelPlacement types.
+
+    This class is a property of any L{TextSymbolizer}.
+    """
+
+    def __init__(self, parent, descendant=True):
+        """
+        Create a new LabelPlacement node from the specified parent.
+
+        @type  parent: L{TextSymbolizer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
+        """
+        super(LabelPlacement, self).__init__(
+            parent, 'LabelPlacement', descendant=descendant)
+
+        setattr(
+            self.__class__, 'PointPlacement',
+            SLDNode.makeproperty(
+                'sld',
+                cls=PointPlacement,
+                docstring="The parameters for describing the fill styling."))
+
+        setattr(
+            self.__class__, 'LinePlacement',
+            SLDNode.makeproperty(
+                'sld',
+                cls=LinePlacement,
+                docstring="The parameters for describing the fill styling."))
+                
+    def create_point_placement(self):
+        """
+        Create a new L{PointPlacement} element on this LabelPlacement.
+
+        @rtype: L{PointPlacement}
+        @return: A new PointPlacement element, attached to this LabelPlacement.
+        """
+        return self.create_element('sld', 'PointPlacement')
+
+    def create_line_placement(self):
+        """
+        Create a new L{LinePlacement} element on this LabelPlacement.
+
+        @rtype: L{LinePlacement}
+        @return: A new LinePlacement element, attached to this LabelPlacement.
+        """
+        return self.create_element('sld', 'LinePlacement')
+
+class PointPlacement(StyleItem):
+    """
+    A style specification for PointPlacement types.
+
+    This class is a property of any L{Symbolizer}.
+    """
+
+    def __init__(self, parent, descendant=True):
+        """
+        Create a new PointPlacement node from the specified parent.
+
+        @type  parent: L{Symbolizer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
+        """
+        super(PointPlacement, self).__init__(
+            parent, 'PointPlacement', descendant=descendant)
+        setattr(
+            self.__class__, 'AnchorPoint',
+            SLDNode.makeproperty(
+                'sld',
+                cls=AnchorPoint,
+                docstring="The parameters for describing the PointPlacement styling."))
+
+    def create_anchor_point(self):
+        """
+        Create a new L{AnchorPoint} element on this PointPlacement.
+
+        @rtype: L{AnchorPoint}
+        @return: A new LinePlacement element, attached to this LabelPlacement.
+        """
+        return self.create_element('sld', 'AnchorPoint')
+
+
+class AnchorPoint(StyleItem):
+    """
+    A style specification for AnchorPoint types.
+
+    This class is a property of any L{PointPlacement}.
+    """
+
+    def __init__(self, parent, descendant=True):
+        """
+        Create a new AnchorPoint node from the specified parent.
+
+        @type  parent: L{PointPlacement}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
+        """
+        super(AnchorPoint, self).__init__(
+            parent, 'AnchorPoint', descendant=descendant)
+
+        setattr(
+            self.__class__, 'AnchorPointX',
+            SLDNode.makeproperty(
+                'sld', name='AnchorPointX', docstring="The AnchorPoint X"))
+        setattr(
+            self.__class__, 'AnchorPointY',
+            SLDNode.makeproperty(
+                'sld', name='AnchorPointY', docstring="The AnchorPoint Y"))
+
+class LinePlacement(StyleItem):
+    """
+    A style specification for PointPlacement types.
+
+    This class is a property of any L{Symbolizer}.
+    """
+
+    def __init__(self, parent, descendant=True):
+        """
+        Create a new LinePlacement node from the specified parent.
+
+        @type  parent: L{Symbolizer}
+        @param parent: The parent class object.
+        @type  descendant: boolean
+        @param descendant: A flag indicating if this is a descendant node of the parent.
+        """
+        super(LinePlacement, self).__init__(
+            parent, 'LinePlacement', descendant=descendant)
+
 class Halo(SLDNode):
     """
     A style specification for halo types. This class contains a
@@ -758,6 +891,22 @@ class TextSymbolizer(Symbolizer):
         """
         super(TextSymbolizer, self).__init__(
             parent, 'Text*', descendant=descendant)
+        setattr(
+            self.__class__, 'LabelPlacement',
+            SLDNode.makeproperty(
+                'sld',
+                cls=LabelPlacement,
+                docstring="The parameters for describing the label placement.")
+        )
+
+    def create_label_placement(self):
+        """
+        Create a new L{LabelPlacement} element on this Symbolizer.
+
+        @rtype: L{LabelPlacement}
+        @return: A new LabelPlacement element, attached to this symbolizer.
+        """
+        return self.create_element('sld', 'LabelPlacement')
 
 
 class Mark(Symbolizer):
