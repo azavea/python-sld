@@ -1,5 +1,6 @@
 MANIFEST.in
 README.markdown
+setup.py
 python_sld.egg-info/PKG-INFO
 python_sld.egg-info/SOURCES.txt
 python_sld.egg-info/dependency_links.txt
