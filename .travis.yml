@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+before_install:
+  - sudo apt-get -y install libxml2-dev libxlst-dev python-dev
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+# command to run tests
+script:
+  - python setup.py -v test
