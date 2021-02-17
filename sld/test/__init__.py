@@ -57,9 +57,16 @@ class SLD_Test(unittest.TestCase):
 
         self.assertTrue('sld' in sld_doc._nsmap)
 
-        expected = """<sld:StyledLayerDescriptor xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc" version="1.0.0"/>"""
+        expected = ["<sld:StyledLayerDescriptor",
+                    'xmlns:sld="http://www.opengis.net/sld"',
+                    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+                    'xmlns:xlink="http://www.w3.org/1999/xlink"',
+                    'xmlns:ogc="http://www.opengis.net/ogc"',
+                    'version="1.0.0"'
+                   ]
         actual = etree.tostring(sld_doc._node, with_tail=False)
-        self.assertEqual(actual, expected.encode('utf-8'))
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
 
@@ -153,13 +160,18 @@ class SLD_Test(unittest.TestCase):
 
         us._node.remove(us._node[2])
 
-        expected = """<UserStyle xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <Title>%s</Title>
-      <Abstract>A grayscale style showing the population numbers in a given geounit.</Abstract>
-      </UserStyle>""" % expected
+        expected = [
+          '<UserStyle',
+          'xmlns="http://www.opengis.net/sld"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          '<Title>%s</Title>' % expected,
+          '<Abstract>A grayscale style showing the population numbers in a given geounit.</Abstract>'
+        ]
         actual = etree.tostring(us._node, with_tail=False)
-        self.assertEqual(len(actual), len(expected))
-        self.assertEqual(actual, expected.encode('utf-8'), "UserStyle was not serialized correctly.\n%s" % actual)
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertFalse(sld_doc.validate())
@@ -179,10 +191,17 @@ class SLD_Test(unittest.TestCase):
         us.Title = expected
         self.assertEqual(us.Title, expected, "UserStyle Title was '%s', not '%s'" % (us.Title, expected,))
 
-        expected = """<sld:UserStyle xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>%s</sld:Title></sld:UserStyle>""" % expected
+        expected = [
+          '<sld:UserStyle',
+          'xmlns:sld="http://www.opengis.net/sld"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          '<sld:Title>%s</sld:Title>' % expected
+        ]
         actual = etree.tostring(us._node, with_tail=False)
-        self.assertEqual(len(actual), len(expected))
-        self.assertEqual(actual, expected.encode('utf-8'), "UserStyle was not serialized correctly.\n%s" % actual)
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertFalse(sld_doc.validate())
@@ -202,13 +221,18 @@ class SLD_Test(unittest.TestCase):
 
         us._node.remove(us._node[2])
 
-        expected = """<UserStyle xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <Title>Population</Title>
-      <Abstract>%s</Abstract>
-      </UserStyle>""" % expected
+        expected = [
+          '<UserStyle',
+          'xmlns="http://www.opengis.net/sld"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          '<Title>Population</Title>',
+          '<Abstract>%s</Abstract>' % expected
+        ]
         actual = etree.tostring(us._node, with_tail=False)
-        self.assertEqual(len(actual), len(expected))
-        self.assertEqual(actual, expected.encode('utf-8'), "UserStyle was not serialized correctly.\n%s" % actual)
+        for item in expected: 
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertFalse(sld_doc.validate())
@@ -228,10 +252,17 @@ class SLD_Test(unittest.TestCase):
         us.Abstract = expected
         self.assertEqual(us.Abstract, expected, "UserStyle Abstract was '%s', not '%s'" % (us.Abstract, expected,))
 
-        expected = """<sld:UserStyle xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Abstract>%s</sld:Abstract></sld:UserStyle>""" % expected
+        expected = [
+          '<sld:UserStyle',
+          'xmlns:sld="http://www.opengis.net/sld"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          '<sld:Abstract>%s</sld:Abstract>' % expected
+        ]
         actual = etree.tostring(us._node, with_tail=False)
-        self.assertEqual(len(actual), len(expected))
-        self.assertEqual(actual, expected.encode('utf-8'), "UserStyle was not serialized correctly.\n%s" % actual)
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertFalse(sld_doc.validate())
@@ -301,23 +332,29 @@ class SLD_Test(unittest.TestCase):
         rule.Title = expected
         self.assertEqual(rule.Title, expected)
 
-        expected = """<Rule xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <Title>&gt; 999</Title>
-          <ogc:Filter>
+        expected = [
+          '<Rule',
+          'xmlns="http://www.opengis.net/sld"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          '<Title>&gt; 999</Title>',
+          '''<ogc:Filter>
             <ogc:PropertyIsGreaterThanOrEqualTo>
               <ogc:PropertyName>number</ogc:PropertyName>
               <ogc:Literal>880</ogc:Literal>
             </ogc:PropertyIsGreaterThanOrEqualTo>
-          </ogc:Filter>
-          <MaxScaleDenominator>20000</MaxScaleDenominator>
-          <PolygonSymbolizer>
+          </ogc:Filter>''',
+          '<MaxScaleDenominator>20000</MaxScaleDenominator>',
+          '''<PolygonSymbolizer>
             <Fill>
               <CssParameter name="fill">#252525</CssParameter>
             </Fill>
-          </PolygonSymbolizer>
-        </Rule>"""
+          </PolygonSymbolizer>'''
+        ]
         actual = etree.tostring(rule._node, with_tail=False)
-        self.assertEqual(actual, expected.encode('utf-8'), actual)
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertTrue(sld_doc.validate())
@@ -338,9 +375,17 @@ class SLD_Test(unittest.TestCase):
         rule.Title = expected
         self.assertEqual(rule.Title, expected)
 
-        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>&gt; 999</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer></sld:Rule>"""
+        expected = [
+          '<sld:Rule',
+          'xmlns:sld="http://www.opengis.net/sld"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          '<sld:Title>&gt; 999</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer>'
+        ]
         actual = etree.tostring(rule._node, with_tail=False)
-        self.assertEqual(actual, expected.encode('utf-8'), actual)
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertTrue(sld_doc.validate())
@@ -541,9 +586,17 @@ class SLD_Test(unittest.TestCase):
 
         rule.Filter = filter1 + filter2
 
-        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThanOrEqualTo><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsLessThanOrEqualTo></ogc:And></ogc:Filter></sld:Rule>"""
+        expected = [
+          '<sld:Rule',
+          'xmlns:sld="http://www.opengis.net/sld"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          '<sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThanOrEqualTo><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsLessThanOrEqualTo></ogc:And></ogc:Filter>'
+        ]
         actual = etree.tostring(rule._node, with_tail=False)
-        self.assertEqual(actual, expected.encode('utf-8'))
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertTrue(sld_doc.validate())
@@ -570,9 +623,17 @@ class SLD_Test(unittest.TestCase):
 
         rule.Filter = filter1 | filter2
 
-        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:Or><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan></ogc:Or></ogc:Filter></sld:Rule>"""
+        expected = [
+          '<sld:Rule',
+          'xmlns:sld="http://www.opengis.net/sld"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          '<sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:Or><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan></ogc:Or></ogc:Filter>'
+        ]
         actual = etree.tostring(rule._node, with_tail=False)
-        self.assertEqual(actual, expected.encode('utf-8'))
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertTrue(sld_doc.validate())
@@ -604,9 +665,17 @@ class SLD_Test(unittest.TestCase):
 
         rule.Filter = filter1 + (filter2 | filter3)
 
-        expected = """<sld:Rule xmlns:sld="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc"><sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:Or><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan><ogc:PropertyIsEqualTo><ogc:PropertyName>value</ogc:PropertyName><ogc:Literal>yes</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Or></ogc:And></ogc:Filter></sld:Rule>"""
+        expected = [
+          '<sld:Rule',
+          'xmlns:sld="http://www.opengis.net/sld"',
+          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+          'xmlns:xlink="http://www.w3.org/1999/xlink"',
+          'xmlns:ogc="http://www.opengis.net/ogc"',
+          '<sld:Title>test rule</sld:Title><sld:PointSymbolizer><sld:Graphic><sld:Mark><sld:WellKnownName>square</sld:WellKnownName><sld:Fill><sld:CssParameter name="fill">#ff0000</sld:CssParameter></sld:Fill></sld:Mark></sld:Graphic></sld:PointSymbolizer><ogc:Filter><ogc:And><ogc:PropertyIsGreaterThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>10</ogc:Literal></ogc:PropertyIsGreaterThan><ogc:Or><ogc:PropertyIsLessThan><ogc:PropertyName>number</ogc:PropertyName><ogc:Literal>-10</ogc:Literal></ogc:PropertyIsLessThan><ogc:PropertyIsEqualTo><ogc:PropertyName>value</ogc:PropertyName><ogc:Literal>yes</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Or></ogc:And></ogc:Filter>'
+        ]
         actual = etree.tostring(rule._node, with_tail=False, pretty_print=False)
-        self.assertEqual(actual, expected.encode('utf-8'))
+        for item in expected:
+          self.assertIn(item.encode('utf-8'), actual)
 
         sld_doc.normalize()
         self.assertTrue(sld_doc.validate())
@@ -756,7 +825,7 @@ class SLD_Test(unittest.TestCase):
 
         sld_doc.normalize()
         self.assertTrue(sld_doc.validate())
-
+        
 
 if __name__ == '__main__':
     unittest.main()
