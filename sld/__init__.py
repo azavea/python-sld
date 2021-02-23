@@ -1410,50 +1410,16 @@ class StyledLayerDescriptor(SLDNode):
         """
         super(StyledLayerDescriptor, self).__init__(None)
 
-        if StyledLayerDescriptor._cached_schema is None:
-            logging.debug('Storing new schema into cache.')
-
-            localschema = NamedTemporaryFile(delete=False)
-
-            localschema_backup_path = './StyledLayerDescriptor-backup.xsd'
-            try:
-                logging.debug('Cache hit for backup schema document.')
-                localschema_backup = open(localschema_backup_path, 'rb')
-            except IOError:
-                logging.debug('Cache miss for backup schema document.')
-                localschema_backup = open(localschema_backup_path, 'wb')
-
-                schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
-                resp = urlopen(schema_url)
-                localschema_backup.write(resp.read())
-                resp.close()
-                localschema_backup.close()
-                localschema_backup = open(localschema_backup_path, 'rb')
-
-            localschema.write(localschema_backup.read())
-            localschema.close()
-            localschema_backup.close()
-
-            localschema = open(localschema.name, 'rt')
-            self._schemadoc = parse(localschema)
-            localschema.close()
-
-            StyledLayerDescriptor._cached_schema = localschema.name
-        else:
-            logging.debug('Fetching schema from cache.')
-
-            localschema = open(StyledLayerDescriptor._cached_schema, 'rt')
-            self._schemadoc = parse(localschema)
-            localschema.close()
+        self._schema = None
+        self._schemadoc = None
 
         if not sld_file is None:
             self._node = parse(sld_file)
-            self._schema = XMLSchema(self._schemadoc)
+            self._load_schema()
             if not self._schema.validate(self._node):
                 logging.warn('SLD File "%s" does not validate against the SLD schema.', sld_file)
         else:
             self._node = Element("{%s}StyledLayerDescriptor" % SLDNode._nsmap['sld'], version="1.0.0", nsmap=SLDNode._nsmap)
-            self._schema = None
 
         setattr(self.__class__, 'NamedLayer', SLDNode.makeproperty('sld', cls=NamedLayer,
                 docstring="The named layer of the SLD."))
@@ -1485,6 +1451,46 @@ class StyledLayerDescriptor(SLDNode):
         if not self.NamedLayer is None:
             self.NamedLayer.normalize()
 
+    def _load_schema(self):
+        if self._schema is None:
+            if self._schemadoc is None:
+                if StyledLayerDescriptor._cached_schema is None:
+                    logging.debug('Storing new schema into cache.')
+
+                    localschema = NamedTemporaryFile(delete=False)
+                    
+                    localschema_backup_path = './StyledLayerDescriptor-backup.xsd'
+                    try:
+                        logging.debug('Cache hit for backup schema document.')
+                        localschema_backup = open(localschema_backup_path, 'r')
+                    except IOError:
+                        logging.debug('Cache miss for backup schema document.')
+                        localschema_backup = open(localschema_backup_path, 'w')
+                    
+                        schema_url = 'http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd'
+                        resp = urllib2.urlopen(schema_url)
+                        localschema_backup.write(resp.read())
+                        resp.close()
+                        localschema_backup.close()
+                        localschema_backup = open(localschema_backup_path, 'r')
+                    
+                    localschema.write(localschema_backup.read())
+                    localschema.seek(0)
+                    localschema_backup.close()
+
+                    self._schemadoc = parse(localschema)
+                    localschema.close()
+
+                    StyledLayerDescriptor._cached_schema = localschema.name
+                else:
+                    logging.debug('Fetching schema from cache.')
+
+                    localschema = open(StyledLayerDescriptor._cached_schema, 'r')
+                    self._schemadoc = parse(localschema)
+                    localschema.close()
+
+            self._schema = XMLSchema(self._schemadoc)
+
     def validate(self):
         """
         Validate the current file against the SLD schema. This first normalizes
@@ -1500,8 +1506,7 @@ class StyledLayerDescriptor(SLDNode):
             logging.debug('The node is empty, and cannot be validated.')
             return False
 
-        if self._schema is None:
-            self._schema = XMLSchema(self._schemadoc)
+        self._load_schema()
 
         is_valid = self._schema.validate(self._node)
 
