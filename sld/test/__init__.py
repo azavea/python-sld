@@ -295,7 +295,7 @@ class SLD_Test(unittest.TestCase):
         Test the parsing of the Rules property.
         """
         rules = self._sld0.NamedLayer.UserStyle.FeatureTypeStyle.Rules
-        self.assertEqual(len(rules), 6)
+        self.assertEqual(len(rules), 7)
         self.assertTrue(isinstance(rules[0], sld.Rule), "Rule item in list is not the proper class.")
 
     def test_featuretypestyle_rules2(self):
@@ -740,6 +740,74 @@ class SLD_Test(unittest.TestCase):
 
         self.assertFalse(fill.CssParameters is None)
         self.assertEqual(len(fill.CssParameters), 0)
+
+        sld_doc.normalize()
+        self.assertTrue(sld_doc.validate())
+
+    def test_raster_symbolizer1(self):
+        """
+        Test the parsing of a RasterSymbolizer
+        """
+
+        sld_doc = copy.deepcopy(self._sld0)
+        rule = sld_doc.NamedLayer.UserStyle.FeatureTypeStyle.Rules[6]
+
+        self.assertFalse(rule.RasterSymbolizer is None)
+
+    def test_raster_symbolizer2(self):
+        """
+        Test the construction of a RasterSymbolizer
+        """
+
+        sld_doc = copy.deepcopy(self._sld1)
+        namedlayer = sld_doc.create_namedlayer('test named layer')
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule('test rule', sld.PointSymbolizer)
+        symbolizer = rule.create_symbolizer('Raster')
+        symbolizer.create_colormap()
+
+        self.assertEqual(len(symbolizer.ColorMap.ColorMapEntries), 0)
+        sld_doc.normalize()
+
+        self.assertTrue(sld_doc.validate())
+
+    def test_raster_symbolizer_colormap1(self):
+        """
+        Test the parsing of a raster symbolizer color map
+        """
+
+        sld_doc = copy.deepcopy(self._sld0)
+        rule = sld_doc.NamedLayer.UserStyle.FeatureTypeStyle.Rules[6]
+        entries = rule.RasterSymbolizer.ColorMap.ColorMapEntries
+
+        self.assertEqual(len(entries), 3)
+        self.assertEqual(entries[0].get_color(), '#FFFFFF')
+        self.assertEqual(entries[1].get_quantity(), 0)
+        self.assertEqual(entries[2].get_label(), '25 mm.')
+        self.assertEqual(entries[0].get_opacity(), 0)
+        
+        del entries[1]
+
+        self.assertEqual(len(entries), 2)
+
+        sld_doc.normalize()
+        self.assertTrue(sld_doc.validate())
+
+    def test_raster_symbolizer_colormap2(self):
+        """
+        Test the construction of a raster symbolizer color map.
+        """
+
+        sld_doc = copy.deepcopy(self._sld1)
+        namedlayer = sld_doc.create_namedlayer('test named layer')
+        userstyle = namedlayer.create_userstyle()
+        featuretypestyle = userstyle.create_featuretypestyle()
+        rule = featuretypestyle.create_rule('test rule', sld.PointSymbolizer)
+        symbolizer = rule.create_symbolizer('Raster')
+        colormap = symbolizer.create_colormap()
+
+        self.assertEqual(len(colormap.ColorMapEntries), 0)
 
         sld_doc.normalize()
         self.assertTrue(sld_doc.validate())
