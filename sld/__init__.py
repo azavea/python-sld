@@ -1495,7 +1495,7 @@ class Rule(SLDNode):
         @param   propname: The name of the property to filter.
         @type  comparitor: string
         @param comparitor: The comparison to perform on the property. One of
-            "!=", "<", "<=", "=", ">=", ">", and "%" is required.
+            "!=", "<", "<=", "==", ">=", ">", and "%" is required.
         @type       value: string
         @param      value: The value of the property to compare against.
         @rtype: L{Filter}
